@@ -3,12 +3,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GetAllNotifications } from '../../api';
-import { setAllNotification } from '../../redux/slice/notificationSlice';
+import { deleteNotification, setAllNotification } from '../../redux/slice/notificationSlice';
 import { CustomButton, MicroCard, ModalAddNotification, ModalNotification } from '../../components';
 import { apiNotification } from '../../interface/api';
 import { User } from '../../interface';
 import { stylesGlobal } from '../../util/styleGlobal';
 import { ScrollView } from 'react-native-gesture-handler';
+import { DeleteNotification } from '../../api/notification';
 
 
 export default function Notification() {
@@ -17,6 +18,8 @@ export default function Notification() {
     const notifications: apiNotification[] = useSelector((state: any) => state.notification.notification);
     const dispatch = useDispatch();
     const [modalView, setModalView] = useState<boolean>(false);
+    const [modalViewAddNotification, setModalViewAddNotification] = useState<boolean>(false);
+
     const [curentNotification, setCurentNotification] = useState<apiNotification>({} as apiNotification);
 
     useEffect(() => {
@@ -36,7 +39,7 @@ export default function Notification() {
                 <Text>Liste des notifications</Text>
                 <ScrollView>
                     {
-                        notifications.map((notification: any) => {
+                        notifications.map((notification: apiNotification) => {
                             return (
                                 <MicroCard
                                     key={notification.id + "-notification"}
@@ -49,6 +52,13 @@ export default function Notification() {
                                         setCurentNotification(notification);
                                         setModalView(true);
                                     }}
+                                    deletedPress={() => {
+
+                                        DeleteNotification(notification.id, user).then((res) => {
+                                            if (res)
+                                                dispatch(deleteNotification(notification.id));
+                                        })
+                                    }}
                                 />
                             )
                         }
@@ -57,7 +67,9 @@ export default function Notification() {
                 </ScrollView>
                 <CustomButton
                     label="Ajouter une notification"
-                    onPress={() => { }}
+                    onPress={() => {
+                        setModalViewAddNotification(true);
+                    }}
                     icon={undefined}
                 />
 
@@ -68,8 +80,8 @@ export default function Notification() {
                 notification={curentNotification}
             />
             <ModalAddNotification
-                visible={true}
-                setVisible={() => { }}
+                visible={modalViewAddNotification}
+                setVisible={setModalViewAddNotification}
 
             />
         </SafeAreaView>

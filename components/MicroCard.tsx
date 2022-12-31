@@ -10,9 +10,11 @@ interface Props {
     chevronDisabled?: boolean;
     isSwipeable?: boolean;
     onPress: () => void;
+    deletedPress?: () => void;
+
 }
 
-export default function MicroCard({ title, status, description, onPress, chevronDisabled = false, isSwipeable = false }: Props) {
+export default function MicroCard({ title, status, description, onPress, chevronDisabled = false, isSwipeable = false, deletedPress }: Props) {
 
     return (
         <>
@@ -20,6 +22,7 @@ export default function MicroCard({ title, status, description, onPress, chevron
                 isSwipeable ?
                     <ListItem.Swipeable
                         onPress={onPress}
+
                         containerStyle={
                             [styles.microCard, styles.decoration, { minHeight: 60, minWidth: "100%", maxWidth: '100%' }]
 
@@ -37,7 +40,12 @@ export default function MicroCard({ title, status, description, onPress, chevron
                             <Button
                                 containerStyle={{ borderRadius: 5, }}
                                 title="Delete"
-                                onPress={() => reset()}
+                                onPress={() => {
+                                    reset();
+
+                                    if (deletedPress)
+                                        deletedPress();
+                                }}
                                 icon={{ name: 'delete', color: 'white' }}
                                 buttonStyle={{ minHeight: '80%', backgroundColor: 'red' }}
                             />

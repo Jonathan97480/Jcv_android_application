@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
 import { Modal, StyleSheet, View, ActivityIndicator, Text, ScrollView } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
 import { Button, Input, Switch } from '@rneui/base';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { apiNotification } from '../interface/api';
 import { stylesGlobal } from '../util/styleGlobal';
+import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import { PostNotification } from '../api/notification';
+import { setNotification } from '../redux/slice/notificationSlice';
+
+
 
 interface Props {
     visible: boolean;
@@ -11,19 +17,41 @@ interface Props {
     notification?: apiNotification;
 }
 
-interface Form {
+export interface Form {
     title: string;
     errorTitle: string;
     description: string;
     errorDescription: string;
     isRepeat: boolean;
+    date: Date;
 }
 
 
 export default function ModalAddNotification({ visible, setVisible, notification }: Props) {
-
+    const [date, setDate] = useState(new Date());
     const formValue = getFormDefaultValues(notification);
     const [form, setForm] = useState<Form>(formValue);
+    const user = useSelector((state: any) => state.user.user);
+    const Notifications: apiNotification[] = useSelector((state: any) => state.notification.notification);
+    const dispatch = useDispatch();
+
+    const onChange = (event: any, selectedDate: any) => {
+        const currentDate = selectedDate;
+        setDate(currentDate);
+        setForm({ ...form, date: currentDate });
+    };
+
+    const showMode = (currentMode: "date" | "time") => {
+        DateTimePickerAndroid.open({
+            value: date,
+            onChange,
+            mode: currentMode,
+            is24Hour: true,
+        });
+    };
+    const showDatepicker = () => {
+        showMode('date');
+    };
 
 
     return (
@@ -49,16 +77,26 @@ export default function ModalAddNotification({ visible, setVisible, notification
                         onChangeText={(text) => setForm({ ...form, description: text })}
                         errorMessage={form.errorDescription}
                     />
-                    <View>
+                    <View style={{ justifyContent: "flex-start", alignItems: "flex-start" }}>
                         <Text>Répéter la notification tous les jour jusque sa validation </Text>
                         <Switch value={form.isRepeat} onValueChange={(Boolean) => {
                             setForm({ ...form, isRepeat: Boolean })
                         }} />
                     </View>
+                    <View>
+                        <Text>Date de début de la notification</Text>
+                        <Text>{`${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`}</Text>
+                        <Button
+                            containerStyle={{ width: "100%", marginTop: 10, marginBottom: 10, elevation: 5 }}
+                            icon={{ name: "calendar", type: "font-awesome", color: "#fff", containerStyle: { marginRight: 10 } }}
+                            onPress={showDatepicker} title="Changer la date de début" />
+                    </View>
+
 
                     <Button
                         title="Ajouter"
-                        onPress={() => { }}
+                        onPress={() => { submit(); }}
+                        containerStyle={{ elevation: 5 }}
 
                     />
                 </View>
@@ -76,6 +114,7 @@ export default function ModalAddNotification({ visible, setVisible, notification
                 description: notification.description,
                 errorDescription: "",
                 isRepeat: notification.repeated,
+                date: date,
             }
         }
         return resetForm();
@@ -87,7 +126,27 @@ export default function ModalAddNotification({ visible, setVisible, notification
             description: "",
             errorDescription: "",
             isRepeat: false,
+            date: date,
 
         }
+    }
+
+    function submit() {
+        if (form.title === "") {
+            setForm({ ...form, errorTitle: "Le titre est obligatoire" })
+            return;
+        }
+
+        PostNotification(form, user).then((res: apiNotification) => {
+
+            dispatch(setNotification(res))
+            setForm(resetForm());
+            setDate(new Date());
+            setVisible(false)
+
+        }).catch((err) => {
+            console.error(err);
+        })
+
     }
 }
