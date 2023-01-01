@@ -10,7 +10,8 @@ import { User } from '../../interface';
 import { stylesGlobal } from '../../util/styleGlobal';
 import { ScrollView } from 'react-native-gesture-handler';
 import { DeleteNotification } from '../../api/notification';
-import { filtersNotifications, fixeText, formatDateToForDisplay } from '../../util/function';
+import { filtersNotifications, fixeText, formatDateToForDisplay, registerForPushNotificationsAsync } from '../../util/function';
+import { Button } from '@rneui/base';
 
 
 export default function Notification() {
@@ -24,6 +25,11 @@ export default function Notification() {
     const [filterNotifications, setFilterNotifications] = useState<apiNotification[]>([]);
     const [curentNotification, setCurentNotification] = useState<apiNotification | undefined>(undefined);
     const [curentValueFilter, setCurentValueFilter] = useState<string>("active");
+
+
+
+
+
     useEffect(() => {
         if (notifications.length === 0) {
             GetAllNotifications(user).then((res) => {
@@ -45,6 +51,7 @@ export default function Notification() {
         <SafeAreaView style={styles.container}>
             <View style={[stylesGlobal.container, stylesGlobal.padding]} >
                 <Text style={{ marginBottom: 20, fontWeight: "bold", textAlign: "center", fontSize: 20 }}>Liste des notifications</Text>
+
                 <Filters
                     label='Filtrer par'
                     filter={[

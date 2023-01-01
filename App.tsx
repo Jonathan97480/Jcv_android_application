@@ -10,16 +10,26 @@ import { Provider } from 'react-redux';
 import configureStore from './redux/store';
 
 
+
+
 const Tab = createBottomTabNavigator();
 const stackCustomNavigation = createStackNavigator();
 
 export default function App() {
 
 
+
+
+
+
   return (
 
-    <Provider store={configureStore}>
-      <NavigationContainer >
+    <Provider store={configureStore} >
+
+
+
+      <NavigationContainer  >
+
         <stackCustomNavigation.Navigator
           initialRouteName='Tab'
           screenOptions={{

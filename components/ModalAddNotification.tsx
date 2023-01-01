@@ -29,11 +29,12 @@ export interface Form {
 
 
 export default function ModalAddNotification({ visible, setVisible, notification }: Props) {
-    const [date, setDate] = useState(new Date());
 
+
+    const [date, setDate] = useState<Date>(new Date());
     const [form, setForm] = useState<Form>({} as Form);
+
     const user = useSelector((state: any) => state.user.user);
-    /*  const Notifications: apiNotification[] = useSelector((state: any) => state.notification.notification); */
     const dispatch = useDispatch();
 
     const onChange = (event: any, selectedDate: any) => {
@@ -91,7 +92,7 @@ export default function ModalAddNotification({ visible, setVisible, notification
                     </View>
                     <View>
                         <Text>Date de début de la notification</Text>
-                        <Text>{formatDateToForDisplay(form.date)}</Text>
+                        <Text>{formatDateToForDisplay(new Date(form.date))}</Text>
                         <Button
                             containerStyle={{ width: "100%", marginTop: 10, marginBottom: 10, elevation: 5 }}
                             icon={{ name: "calendar", type: "font-awesome", color: "#fff", containerStyle: { marginRight: 10 } }}
