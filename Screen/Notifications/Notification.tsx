@@ -4,12 +4,13 @@ import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GetAllNotifications } from '../../api';
 import { deleteNotification, setAllNotification } from '../../redux/slice/notificationSlice';
-import { CustomButton, MicroCard, ModalAddNotification, ModalNotification } from '../../components';
+import { CustomButton, Filters, MicroCard, ModalAddNotification, ModalNotification } from '../../components';
 import { apiNotification } from '../../interface/api';
 import { User } from '../../interface';
 import { stylesGlobal } from '../../util/styleGlobal';
 import { ScrollView } from 'react-native-gesture-handler';
 import { DeleteNotification } from '../../api/notification';
+import { filtersNotifications, fixeText, formatDateToForDisplay } from '../../util/function';
 
 
 export default function Notification() {
@@ -20,44 +21,75 @@ export default function Notification() {
     const [modalView, setModalView] = useState<boolean>(false);
     const [modalViewAddNotification, setModalViewAddNotification] = useState<boolean>(false);
 
-    const [curentNotification, setCurentNotification] = useState<apiNotification>({} as apiNotification);
-
+    const [filterNotifications, setFilterNotifications] = useState<apiNotification[]>([]);
+    const [curentNotification, setCurentNotification] = useState<apiNotification | undefined>(undefined);
+    const [curentValueFilter, setCurentValueFilter] = useState<string>("active");
     useEffect(() => {
-        GetAllNotifications(user).then((res) => {
+        if (notifications.length === 0) {
+            GetAllNotifications(user).then((res) => {
 
-            if (res.length === 0) return;
+                if (res.length === 0) return;
 
-            if (notifications.length === 0)
+                const activeNotifications: apiNotification[] = filtersNotifications(res, curentValueFilter);
                 dispatch(setAllNotification(res))
+                setFilterNotifications(activeNotifications);
 
-        });
+            });
+        } else {
+            const activeNotifications: apiNotification[] = filtersNotifications(notifications, curentValueFilter);
+            setFilterNotifications(activeNotifications);
+        }
     }, [notifications]);
 
     return (
         <SafeAreaView style={styles.container}>
             <View style={[stylesGlobal.container, stylesGlobal.padding]} >
-                <Text>Liste des notifications</Text>
+                <Text style={{ marginBottom: 20, fontWeight: "bold", textAlign: "center", fontSize: 20 }}>Liste des notifications</Text>
+                <Filters
+                    label='Filtrer par'
+                    filter={[
+                        { label: "Active", isDefault: true, value: "active" },
+                        { label: "Validée", value: "validated" },
+                        { label: "Avenir", value: "coming" },
+
+                    ]}
+                    params={
+                        {
+                            colorActive: "#2e64e5",
+                            isUnderlineActive: true,
+                        }
+                    }
+                    onPress={(value) => {
+                        setCurentValueFilter(value);
+                        const newNotificationFilter = filtersNotifications(notifications, value);
+                        setFilterNotifications(newNotificationFilter);
+                    }}
+                />
                 <ScrollView>
                     {
-                        notifications.map((notification: apiNotification) => {
+                        filterNotifications.map((notification: apiNotification) => {
                             return (
                                 <MicroCard
                                     key={notification.id + "-notification"}
-                                    title={notification.title}
+                                    title={fixeText(notification.title, 25, "...")}
                                     description={notification.description}
-                                    status={notification.date}
+                                    status={formatDateToForDisplay(new Date(notification.date))}
                                     chevronDisabled={true}
                                     isSwipeable={true}
                                     onPress={() => {
                                         setCurentNotification(notification);
                                         setModalView(true);
                                     }}
-                                    deletedPress={() => {
+                                    onDeletedPress={() => {
 
                                         DeleteNotification(notification.id, user).then((res) => {
                                             if (res)
                                                 dispatch(deleteNotification(notification.id));
                                         })
+                                    }}
+                                    onEditPress={() => {
+                                        setCurentNotification(notification);
+                                        setModalViewAddNotification(true);
                                     }}
                                 />
                             )
@@ -74,14 +106,17 @@ export default function Notification() {
                 />
 
             </View>
-            <ModalNotification
-                visible={modalView}
-                setVisible={setModalView}
-                notification={curentNotification}
-            />
+            {
+                curentNotification &&
+                <ModalNotification
+                    visible={modalView}
+                    setVisible={setModalView}
+                    notification={curentNotification}
+                />}
             <ModalAddNotification
                 visible={modalViewAddNotification}
                 setVisible={setModalViewAddNotification}
+                notification={curentNotification}
 
             />
         </SafeAreaView>

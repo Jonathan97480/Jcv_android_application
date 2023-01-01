@@ -9,6 +9,7 @@ import { addCustomer, updateCustomer } from '../redux/slice/customersSlice';
 import { Customer } from '../interface';
 import CustomButton from './CustomButton';
 import { stylesGlobal } from '../util/styleGlobal';
+import Filters from './Filters';
 
 
 
@@ -37,7 +38,7 @@ export interface formCustomer {
 }
 
 interface ViewForm {
-    view: "info" | "adresse" | "contact";
+    view: string;
 }
 
 export default function CustomersAdd({ curentCustomer, isModalView, setModalView }: { curentCustomer: Customer | null, isModalView: boolean, setModalView: (value: boolean) => void }) {
@@ -110,29 +111,27 @@ export default function CustomersAdd({ curentCustomer, isModalView, setModalView
             style={{ padding: 20 }}>
 
             <View style={stylesGlobal.padding} >
+                <Text style={styles.title}>Ajouter un client</Text>
 
-                <View
+                <Filters
+                    filter={[
+                        { label: "Info client", isDefault: true, value: "info" },
+                        { label: "Adresse du client", value: "adresse" },
+                        { label: "Cordonnée du client", value: "contact" }
+                    ]}
+                    params={{
+                        isUnderlineActive: true,
+                        colorActive: "#2e64e5",
+                    }}
 
-                    style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}
-                >
-                    <Text
-                        onPress={() => setCurentViewForm({ view: "info" })}
-                        style={{ fontSize: 14, fontWeight: "bold", color: curentViewForm.view === "info" ? "#000" : "#ccc" }}
-                    >Info client</Text>
-                    <Text
-                        onPress={() => setCurentViewForm({ view: "adresse" })}
-                        style={{ fontSize: 14, fontWeight: "bold", color: curentViewForm.view === "adresse" ? "#000" : "#ccc" }}
-                    >Adresse du client</Text>
-                    <Text
-                        onPress={() => setCurentViewForm({ view: "contact" })}
-                        style={{ fontSize: 14, fontWeight: "bold", color: curentViewForm.view === "contact" ? "#000" : "#ccc" }}
-                    >Cordonnée du client</Text>
+                    onPress={(value) => setCurentViewForm({ view: value })}
 
-                </View>
+                />
+
+
 
                 <View style={styles.container}>
 
-                    <Text style={styles.title}>Ajouter un client</Text>
 
                     {
                         curentViewForm.view === "info" &&

@@ -16,9 +16,12 @@ interface Props {
 }
 
 export default function ModalNotification({ visible, setVisible, notification }: Props) {
-
     const user = useSelector((state: any) => state.user.user);
     const dispatch = useDispatch();
+
+
+
+
 
     return (
         <Modal

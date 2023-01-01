@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, StyleSheet, View, ActivityIndicator, Text, ScrollView } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button, Input, Switch } from '@rneui/base';
@@ -6,8 +6,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { apiNotification } from '../interface/api';
 import { stylesGlobal } from '../util/styleGlobal';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
-import { PostNotification } from '../api/notification';
-import { setNotification } from '../redux/slice/notificationSlice';
+import { PostNotification, UpdateNotification } from '../api/notification';
+import { setNotification, updateNotification } from '../redux/slice/notificationSlice';
+import { formatDateToForDisplay } from '../util/function';
 
 
 
@@ -29,10 +30,10 @@ export interface Form {
 
 export default function ModalAddNotification({ visible, setVisible, notification }: Props) {
     const [date, setDate] = useState(new Date());
-    const formValue = getFormDefaultValues(notification);
-    const [form, setForm] = useState<Form>(formValue);
+
+    const [form, setForm] = useState<Form>({} as Form);
     const user = useSelector((state: any) => state.user.user);
-    const Notifications: apiNotification[] = useSelector((state: any) => state.notification.notification);
+    /*  const Notifications: apiNotification[] = useSelector((state: any) => state.notification.notification); */
     const dispatch = useDispatch();
 
     const onChange = (event: any, selectedDate: any) => {
@@ -53,6 +54,11 @@ export default function ModalAddNotification({ visible, setVisible, notification
         showMode('date');
     };
 
+    useEffect(() => {
+
+        setForm(getFormDefaultValues(notification));
+
+    }, [notification]);
 
     return (
         <Modal
@@ -85,7 +91,7 @@ export default function ModalAddNotification({ visible, setVisible, notification
                     </View>
                     <View>
                         <Text>Date de début de la notification</Text>
-                        <Text>{`${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`}</Text>
+                        <Text>{formatDateToForDisplay(form.date)}</Text>
                         <Button
                             containerStyle={{ width: "100%", marginTop: 10, marginBottom: 10, elevation: 5 }}
                             icon={{ name: "calendar", type: "font-awesome", color: "#fff", containerStyle: { marginRight: 10 } }}
@@ -114,7 +120,7 @@ export default function ModalAddNotification({ visible, setVisible, notification
                 description: notification.description,
                 errorDescription: "",
                 isRepeat: notification.repeated,
-                date: date,
+                date: new Date(notification.date),
             }
         }
         return resetForm();
@@ -136,17 +142,33 @@ export default function ModalAddNotification({ visible, setVisible, notification
             setForm({ ...form, errorTitle: "Le titre est obligatoire" })
             return;
         }
+        if (notification !== undefined) {
 
-        PostNotification(form, user).then((res: apiNotification) => {
+            UpdateNotification(notification.id, form, user).then((res: apiNotification) => {
 
-            dispatch(setNotification(res))
-            setForm(resetForm());
-            setDate(new Date());
-            setVisible(false)
+                dispatch(updateNotification(res))
+                setForm(resetForm());
+                setDate(new Date());
+                setVisible(false)
 
-        }).catch((err) => {
-            console.error(err);
-        })
+            }).catch((err) => {
+                console.error(err);
+            })
+
+        } else {
+
+            PostNotification(form, user).then((res: apiNotification) => {
+
+                dispatch(setNotification(res))
+                setForm(resetForm());
+                setDate(new Date());
+                setVisible(false)
+
+            }).catch((err) => {
+                console.error(err);
+            })
+        }
+
 
     }
 }
