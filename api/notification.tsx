@@ -33,6 +33,7 @@ export async function GetAllNotifications(user: User): Promise<apiNotification[]
             isValidated: element.attributes.valider,
             repeated: element.attributes.repetition,
             date: element.attributes.date_debut_notification,
+            isPushed: element.attributes.is_push
         });
 
     }
@@ -68,6 +69,7 @@ export async function PostNotification(form: Form, user: User): Promise<apiNotif
         isValidated: data.data.attributes.valider,
         repeated: data.data.attributes.repetition,
         date: data.data.attributes.date_debut_notification,
+        isPushed: data.data.attributes.is_push
     };
     return notification;
 }
@@ -138,6 +140,7 @@ export async function UpdateNotification(id: number, form: Form, user: User): Pr
         isValidated: data.data.attributes.valider,
         repeated: data.data.attributes.repetition,
         date: data.data.attributes.date_debut_notification,
+        isPushed: data.data.attributes.is_push
     };
     return notification;
 }

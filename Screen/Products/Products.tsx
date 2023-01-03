@@ -9,19 +9,13 @@ import { SousCategoryCard } from '../../components';
 import { useDispatch, useSelector } from 'react-redux'
 import { stylesGlobal } from '../../util/styleGlobal';
 import { setAllNotification } from '../../redux/slice/notificationSlice';
-import { filtersNotifications, registerForPushNotificationsAsync } from '../../util/function';
-import { notificationPush, setAllNotificationPush } from '../../redux/slice/notificationPushSlice';
-import * as Notifications from 'expo-notifications';
 import { login, setIsLogged } from '../../redux/slice/userSlice';
 import { setData, setLoading } from '../../redux/slice/customersSlice';
+import { filtersNotifications } from '../../util/function';
+import { pushNotification } from '../../components/NotificationPush';
 
-Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-        shouldShowAlert: true,
-        shouldPlaySound: false,
-        shouldSetBadge: false,
-    }),
-});
+
+
 
 SplashScreen.preventAutoHideAsync();
 
@@ -33,54 +27,57 @@ export default function Products() {
     const [categories, setCategories] = useState<apiCategories[]>([]);
     const [appIsReady, setAppIsReady] = useState(false);
 
-    const [expoPushToken, setExpoPushToken] = useState<string | undefined>('');
-    const [notification, setNotification] = useState<any>(false);
-    const notificationListener = useRef<any>();
-    const responseListener = useRef<any>();
-    const notificationPush: notificationPush[] = useSelector((state: any) => state.notificationPush.notificationPush);
+
+
+
 
     const dispatch = useDispatch();
     useEffect(() => {
-        registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
 
-        notificationListener.current = Notifications.addNotificationReceivedListener(_notification => {
-            setNotification(_notification);
-        });
 
-        responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-            console.log(response);
-        });
-
-        return () => {
-            Notifications.removeNotificationSubscription(notificationListener.current);
-            Notifications.removeNotificationSubscription(responseListener.current);
-        };
-    }, []);
-
-    useEffect(() => {
-        GetAllCategories().then((categories) => {
-            setCategories(categories);
-            setIsLoading(false);
-        });
 
         async function prepare() {
             try {
+                const _categories = await GetAllCategories()
+                setCategories(_categories);
+                setIsLoading(false);
 
 
                 const _user = await UserLogin()
                 dispatch(login(_user));
-                dispatch(setIsLogged(true));
+
 
                 const _customers = await GetCustomers(_user);
                 dispatch(setData(_customers));
-                dispatch(setLoading());
-
 
 
                 const _notifications = await GetAllNotifications(_user);
                 dispatch(setAllNotification(_notifications));
                 const notificationActive = filtersNotifications(_notifications, 'active');
-                dispatch(setAllNotificationPush(notificationActive))
+
+
+                if (notificationActive.length > 0) {
+
+                    const _notificationPush = [...notificationActive];
+
+                    notificationActive.map((_notification, index) => {
+                        if (!_notification.isPushed) {
+                            pushNotification({
+                                title: _notification.title,
+                                body: _notification.description,
+                                trigger: { seconds: 1 }
+                            })
+                            _notificationPush[index] = {
+                                ..._notification,
+                                isPushed: true
+                            }
+                        }
+                    })
+
+
+                }
+
+
 
 
 
@@ -95,53 +92,16 @@ export default function Products() {
 
         prepare();
 
-        return () => {
-            setCategories([]);
-        }
 
+        return () => {
+
+            setCategories([]);
+        };
     }, []);
 
-    useEffect(() => {
 
 
-        if (notificationPush.length > 0) {
 
-            const _notificationPush = [...notificationPush];
-
-            notificationPush.map((_notification, index) => {
-                if (!notification.isPush) {
-                    push(_notification)
-                    _notificationPush[index] = {
-                        ..._notification,
-                        isPush: true
-                    }
-                }
-            })
-
-            if (!isEqual(notificationPush, _notificationPush)) {
-                dispatch(setAllNotificationPush(_notificationPush))
-            }
-        }
-
-        async function push(_notification: notificationPush) {
-            await Notifications.scheduleNotificationAsync({
-                content: {
-                    title: _notification.title,
-                    body: _notification.description,
-                    data: { data: 'goes here' },
-                },
-                trigger: { seconds: 2 },
-            });
-
-        }
-
-        function isEqual(tableau1: notificationPush[], tableau2: notificationPush[]) {
-            if (tableau1.length !== tableau2.length) return false
-
-            return tableau1.every((value, index) => value.isPush === tableau2[index].isPush)
-        }
-
-    }, [notificationPush]);
 
     const onLayoutRootView = useCallback(async () => {
         if (appIsReady) {

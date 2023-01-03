@@ -10,8 +10,8 @@ import { User } from '../../interface';
 import { stylesGlobal } from '../../util/styleGlobal';
 import { ScrollView } from 'react-native-gesture-handler';
 import { DeleteNotification } from '../../api/notification';
-import { filtersNotifications, fixeText, formatDateToForDisplay, registerForPushNotificationsAsync } from '../../util/function';
-import { Button } from '@rneui/base';
+import { filtersNotifications, fixeText, formatDateToForDisplay } from '../../util/function';
+
 
 
 export default function Notification() {

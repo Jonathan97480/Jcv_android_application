@@ -11,6 +11,7 @@ import { Customer } from '../../interface';
 import { CustomerAdd } from '..';
 import { stylesGlobal } from '../../util/styleGlobal';
 import { CustomButton, MicroCard } from '../../components';
+
 type ProfileScreenNavigationProp = StackNavigationProp<
     RootCustomersStackParamList
 
@@ -28,22 +29,7 @@ export default function Customers() {
     return (
         <SafeAreaView style={{ padding: 8 }} >
             <View style={[stylesGlobal.container, stylesGlobal.padding, { paddingVertical: 0 }]}>
-                <CustomButton
-                    label={'Ajouter un client'}
-                    onPress={() => {
-                        setIsModalView(true)
-                    }}
-                    icon={
-                        <Icon
-                            type='font-awesome'
-                            name='user-plus'
-                            color={'white'}
-                            size={17}
-                            containerStyle={{ marginRight: 5 }}
 
-                        />
-                    }
-                />
                 <Input
                     rightIcon={
                         <Icon
@@ -65,7 +51,12 @@ export default function Customers() {
 
                     placeholder="Rechercher un client" />
             </View>
-            <ScrollView>
+            <ScrollView
+                style={{
+                    maxHeight: '87%',
+                    minHeight: '87%',
+                }}
+            >
                 <View style={[stylesGlobal.container, stylesGlobal.padding]}>
 
                     <Text style={stylesGlobal.title}>Liste des clients</Text>
@@ -90,6 +81,22 @@ export default function Customers() {
 
                 </View>
             </ScrollView>
+            <CustomButton
+                label={'Ajouter un client'}
+                onPress={() => {
+                    setIsModalView(true)
+                }}
+                icon={
+                    <Icon
+                        type='font-awesome'
+                        name='user-plus'
+                        color={'white'}
+                        size={17}
+                        containerStyle={{ marginRight: 5 }}
+
+                    />
+                }
+            />
             <CustomerAdd
                 isModalView={isModalView}
                 setModalView={setIsModalView}

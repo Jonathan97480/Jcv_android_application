@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, StyleSheet, View, ActivityIndicator, Text, ScrollView } from 'react-native';
+import { Modal, StyleSheet, View, ActivityIndicator, Text, ScrollView, ActivityIndicatorBase } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button, Input, Switch } from '@rneui/base';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -37,6 +37,8 @@ export default function ModalAddNotification({ visible, setVisible, notification
     const user = useSelector((state: any) => state.user.user);
     const dispatch = useDispatch();
 
+    const [loading, setLoading] = useState<boolean>(false);
+
     const onChange = (event: any, selectedDate: any) => {
         const currentDate = selectedDate;
         setDate(currentDate);
@@ -61,6 +63,13 @@ export default function ModalAddNotification({ visible, setVisible, notification
 
     }, [notification]);
 
+    const closeModal = () => {
+        setForm(resetForm());
+        setDate(new Date());
+        setVisible(false)
+        setLoading(false);
+    }
+
     return (
         <Modal
             visible={visible}
@@ -72,6 +81,7 @@ export default function ModalAddNotification({ visible, setVisible, notification
 
             <View style={[stylesGlobal.padding, { justifyContent: 'center', minHeight: "100%" }]}>
                 <View style={{ backgroundColor: "#fff", elevation: 5, borderRadius: 5, padding: 10 }}>
+
                     <Input
                         label="Titre"
                         value={form.title}
@@ -139,21 +149,24 @@ export default function ModalAddNotification({ visible, setVisible, notification
     }
 
     function submit() {
+
+        setLoading(true);
+
         if (form.title === "") {
             setForm({ ...form, errorTitle: "Le titre est obligatoire" })
+            setLoading(false);
             return;
         }
         if (notification !== undefined) {
 
             UpdateNotification(notification.id, form, user).then((res: apiNotification) => {
-
+                console.log("BIG RES", res);
                 dispatch(updateNotification(res))
-                setForm(resetForm());
-                setDate(new Date());
-                setVisible(false)
+                closeModal();
 
             }).catch((err) => {
                 console.error(err);
+                closeModal();
             })
 
         } else {
@@ -161,15 +174,17 @@ export default function ModalAddNotification({ visible, setVisible, notification
             PostNotification(form, user).then((res: apiNotification) => {
 
                 dispatch(setNotification(res))
-                setForm(resetForm());
-                setDate(new Date());
-                setVisible(false)
+                closeModal();
+
 
             }).catch((err) => {
                 console.error(err);
+                closeModal();
             })
         }
 
 
     }
+
+
 }

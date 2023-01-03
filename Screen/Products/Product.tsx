@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, ScrollView, ActivityIndicator, Text } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { GetAllProductsByCategory, UserLogin } from '../../api';
+import { GetAllProductsByCategory } from '../../api';
 import { CardProduct } from '../../components';
 import { apiProduct } from '../../interface';
-import { login, setIsLogged } from '../../redux/slice/userSlice';
 import { stylesGlobal } from '../../util/styleGlobal';
 
 

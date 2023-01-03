@@ -1,6 +1,6 @@
 
 
-import { StyleSheet, Image } from 'react-native';
+import { StyleSheet, Image, View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { Customers, Products, Notification, Product, ProductDetails, CustomerDetails } from './Screen';
@@ -8,6 +8,9 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Provider } from 'react-redux';
 import configureStore from './redux/store';
+import NotificationPush from './components/NotificationPush';
+import NotificationIcon from './components/NotificationIcon';
+
 
 
 
@@ -27,7 +30,7 @@ export default function App() {
     <Provider store={configureStore} >
 
 
-
+      <NotificationPush />
       <NavigationContainer  >
 
         <stackCustomNavigation.Navigator
@@ -93,7 +96,7 @@ const MyTabs = () => {
         { tabBarLabel: 'Clients', tabBarIcon: () => (<Image source={require('./assets/customers-icon.png')} style={styles.icon} />) }
       } />
       <Tab.Screen name="Notification" component={Notification} options={
-        { tabBarLabel: 'Notification', tabBarIcon: () => (<Image source={require('./assets/notification-icon.png')} style={styles.icon} />) }
+        { tabBarLabel: 'Notification', tabBarIcon: () => (<NotificationIcon />) }
       } />
 
     </Tab.Navigator>
@@ -102,6 +105,7 @@ const MyTabs = () => {
 
 
 const styles = StyleSheet.create({
+  container: {},
   icon: {
     width: 24,
     height: 24,

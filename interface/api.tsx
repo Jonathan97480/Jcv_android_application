@@ -91,4 +91,5 @@ export interface apiNotification {
     repeated: boolean;
     isValidated: boolean;
     date: string;
+    isPushed: boolean;
 }
