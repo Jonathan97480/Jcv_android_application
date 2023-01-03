@@ -74,7 +74,7 @@ export default function ModalAddNotification({ visible, setVisible, notification
         <Modal
             visible={visible}
             animationType="slide"
-            onRequestClose={() => setVisible(false)}
+            onRequestClose={() => closeModal()}
             transparent={true}
 
         >
@@ -122,31 +122,6 @@ export default function ModalAddNotification({ visible, setVisible, notification
         </Modal>
     )
 
-    function getFormDefaultValues(notification: apiNotification | undefined): Form {
-
-        if (notification !== undefined) {
-            return {
-                title: notification.title,
-                errorTitle: "",
-                description: notification.description,
-                errorDescription: "",
-                isRepeat: notification.repeated,
-                date: new Date(notification.date),
-            }
-        }
-        return resetForm();
-    }
-    function resetForm() {
-        return {
-            title: "",
-            errorTitle: "",
-            description: "",
-            errorDescription: "",
-            isRepeat: false,
-            date: date,
-
-        }
-    }
 
     function submit() {
 
@@ -185,6 +160,29 @@ export default function ModalAddNotification({ visible, setVisible, notification
 
 
     }
+    function resetForm() {
+        return {
+            title: "",
+            errorTitle: "",
+            description: "",
+            errorDescription: "",
+            isRepeat: false,
+            date: date,
 
+        }
+    }
+    function getFormDefaultValues(notification: apiNotification | undefined): Form {
 
+        if (notification !== undefined) {
+            return {
+                title: notification.title,
+                errorTitle: "",
+                description: notification.description,
+                errorDescription: "",
+                isRepeat: notification.repeated,
+                date: new Date(notification.date),
+            }
+        }
+        return resetForm();
+    }
 }
