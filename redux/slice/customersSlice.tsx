@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { UpdateCustomer } from "../../api/customers";
+
 import { Customer } from "../../interface";
 
 

@@ -15,10 +15,12 @@ import { Icon } from '@rneui/base';
 
 
 
+
 export default function Notification() {
 
-    const user: User = useSelector((state: any) => state.user.user);
-    const notifications: apiNotification[] = useSelector((state: any) => state.notification.notification);
+    const userReducer: User = useSelector((state: any) => state.user.user);
+    const notificationsReducer: apiNotification[] = useSelector((state: any) => state.notification.notification);
+
     const dispatch = useDispatch();
     const [modalView, setModalView] = useState<boolean>(false);
     const [modalViewAddNotification, setModalViewAddNotification] = useState<boolean>(false);
@@ -27,26 +29,44 @@ export default function Notification() {
     const [curentNotification, setCurentNotification] = useState<apiNotification | undefined>(undefined);
     const [curentValueFilter, setCurentValueFilter] = useState<string>("active");
 
+    const _editNotification = (notification: apiNotification) => {
+        setCurentNotification(notification);
+        setModalViewAddNotification(true);
+    };
+    const _deleteNotification = (id: number) => {
+        DeleteNotification(id, userReducer).then((res) => {
+            if (res)
 
+                GetAllNotifications(userReducer).then((res) => {
+                    dispatch(deleteNotification(id));
+
+                });
+
+
+        });
+
+    }
+
+    const closeModal = () => {
+        setModalView(false);
+        setModalViewAddNotification(false);
+        setCurentNotification({
+            id: 0,
+            title: "",
+            description: "",
+            date: "",
+            isValidated: false,
+            isPushed: false,
+            repeated: false,
+        });
+    };
 
 
 
     useEffect(() => {
-        if (notifications.length === 0) {
-            GetAllNotifications(user).then((res) => {
-
-                if (res.length === 0) return;
-
-                const activeNotifications: apiNotification[] = filtersNotifications(res, curentValueFilter);
-                dispatch(setAllNotification(res))
-                setFilterNotifications(activeNotifications);
-
-            });
-        } else {
-            const activeNotifications: apiNotification[] = filtersNotifications(notifications, curentValueFilter);
-            setFilterNotifications(activeNotifications);
-        }
-    }, [notifications]);
+        const activeNotifications: apiNotification[] = filtersNotifications(notificationsReducer, curentValueFilter);
+        setFilterNotifications(activeNotifications);
+    }, [notificationsReducer]);
 
     return (
         <SafeAreaView style={styles.container}>
@@ -69,7 +89,7 @@ export default function Notification() {
                     }
                     onPress={(value) => {
                         setCurentValueFilter(value);
-                        const newNotificationFilter = filtersNotifications(notifications, value);
+                        const newNotificationFilter = filtersNotifications(notificationsReducer, value);
                         setFilterNotifications(newNotificationFilter);
                     }}
                 />
@@ -99,14 +119,10 @@ export default function Notification() {
                                     }
                                     onDeletedPress={() => {
 
-                                        DeleteNotification(notification.id, user).then((res) => {
-                                            if (res)
-                                                dispatch(deleteNotification(notification.id));
-                                        })
+                                        _deleteNotification(notification.id);
                                     }}
                                     onEditPress={() => {
-                                        setCurentNotification(notification);
-                                        setModalViewAddNotification(true);
+                                        _editNotification(notification);
                                     }}
                                 />
                             )
@@ -128,12 +144,14 @@ export default function Notification() {
                 curentNotification &&
                 <ModalNotification
                     visible={modalView}
-                    setVisible={setModalView}
+                    setVisible={closeModal}
                     notification={curentNotification}
+                    setEdit={_editNotification}
+                    setDelete={_deleteNotification}
                 />}
             <ModalAddNotification
                 visible={modalViewAddNotification}
-                setVisible={setModalViewAddNotification}
+                setVisible={closeModal}
                 notification={curentNotification}
 
             />

@@ -8,7 +8,7 @@ import { RootCustomersStackParamList } from '../../interface/navigation';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { Customer } from '../../interface';
-import { CustomerAdd } from '..';
+import { CustomerAdd, CustomerDetails } from '..';
 import { stylesGlobal } from '../../util/styleGlobal';
 import { CustomButton, MicroCard } from '../../components';
 import { DeleteCustomer } from '../../api/customers';
@@ -29,14 +29,66 @@ export default function Customers() {
     const [customersList, setCustomersList] = React.useState<Customer[]>(customers);
     const [curentCustomer, setCurentCustomer] = React.useState<Customer | undefined>();
 
-    const navigation = useNavigation<ProfileScreenNavigationProp>();
-
     const [isModalView, setIsModalView] = React.useState(false);
+    const [isModalDetailsView, setIsDetailsModalView] = React.useState(false);
+
     const dispatch = useDispatch();
+
+
+    const setEdit = (customer: Customer) => {
+        setCurentCustomer(customer);
+        setIsModalView(true);
+    }
+
+    const setDelete = (customer: Customer) => {
+
+
+        Alert.alert(
+            "Suppression",
+            "Voulez-vous supprimer ce client ?",
+            [
+                {
+                    text: "Annuler",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                {
+                    text: "Oui", onPress: () => {
+                        setCurentCustomer(undefined);
+                        DeleteCustomer(customer, user)
+                        dispatch(deletedCustomer(customer))
+                    }
+                }
+            ]
+        );
+    }
+
+    const closeModal = () => {
+        setCurentCustomer({
+            id: 0,
+            attributes: {
+                nom: '',
+                prenom: '',
+                email: '',
+                telephone: null,
+                telephone_mobile: null,
+                faxe: null,
+                description: '',
+                statut: '',
+                address: '',
+                ville: '',
+                code_postal: '',
+
+            },
+        });
+        setIsModalView(false);
+        setIsDetailsModalView(false);
+    }
 
     useEffect(() => {
         setCustomersList(customers);
     }, [customers])
+
 
     return (
         <SafeAreaView  >
@@ -94,36 +146,16 @@ export default function Customers() {
                                             />
                                         }
                                         onPress={() => {
-                                            navigation.navigate("CustomerDetails", { customer: customer })
+                                            setCurentCustomer(customer)
+                                            setIsDetailsModalView(true)
                                         }}
-                                        onDeletedPress={() => {
-                                            Alert.alert(
-                                                //title
-                                                'suppression de client',
-                                                //body
-                                                'Voulez vous vraiment supprimer ce client ?',
-                                                [
-                                                    {
-                                                        text: 'oui', onPress: async () => {
-                                                            await DeleteCustomer(customer, user)
-                                                            dispatch(deletedCustomer(customer))
 
-                                                        }
-                                                    },
-                                                    {
-                                                        text: 'non',
-                                                        onPress: () => console.log('No Pressed'),
-                                                        style: 'cancel',
-                                                    },
-                                                ],
-                                                { cancelable: false }
-                                                //clicking out side of alert will not cancel
-                                            );
+                                        onDeletedPress={() => {
+                                            setDelete(customer)
 
                                         }}
                                         onEditPress={() => {
-                                            setCurentCustomer(customer)
-                                            setIsModalView(true)
+                                            setEdit(customer)
 
                                         }}
                                     />
@@ -137,8 +169,9 @@ export default function Customers() {
                 <CustomButton
                     label={'Ajouter un client'}
                     onPress={() => {
-                        setCurentCustomer(undefined)
+
                         setIsModalView(true)
+                        setCurentCustomer(undefined)
                     }}
                     icon={
                         <Icon
@@ -155,9 +188,20 @@ export default function Customers() {
             </View>
             <CustomerAdd
                 isModalView={isModalView}
-                setModalView={setIsModalView}
+                setModalView={closeModal}
                 curentCustomer={curentCustomer}
+
+
             />
+            {
+                curentCustomer &&
+                <CustomerDetails
+                    visible={isModalDetailsView}
+                    setVisible={closeModal}
+                    customer={curentCustomer}
+                    setDelete={setDelete}
+                    setEdit={setEdit}
+                />}
         </SafeAreaView>
     );
 

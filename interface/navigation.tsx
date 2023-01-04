@@ -7,10 +7,6 @@ export type RootProductStackParamList = {
     ProductDetails: { Product: apiProduct };
 };
 export type RootCustomersStackParamList = {
-
-    CustomerDetails: { customer: Customer };
-
-
 };
 export type RootNotificationsStackParamList = {
     Notification: undefined;

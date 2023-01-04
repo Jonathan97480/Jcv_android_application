@@ -32,6 +32,7 @@ export const notificationSlice = createSlice({
             const index = state.notification.findIndex((item) => item.id === action.payload);
             state.notification.splice(index, 1);
             state.error = null;
+            state.isLoad = false;
         },
         updateNotification: (state, action) => {
             const index = state.notification.findIndex((item) => item.id === action.payload.id);

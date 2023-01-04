@@ -6,5 +6,7 @@ export { default as ModalNotification } from './ModalNotification';
 export { default as ModalAddNotification } from './ModalAddNotification';
 export { default as Filters } from './Filters';
 export { default as IndicatorActivity } from './IndicatorActivity';
+export { default as BackButton } from './BackButton';
+export { default as ActionsPage } from './ActionsPage';
 
 

@@ -52,10 +52,7 @@ export default function App() {
             initialParams={{}}
 
           />
-          <stackCustomNavigation.Screen
-            name="CustomerDetails"
-            component={CustomerDetails}
-          />
+
 
 
         </stackCustomNavigation.Navigator >

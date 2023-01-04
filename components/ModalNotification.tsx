@@ -7,15 +7,20 @@ import { apiNotification } from '../interface/api';
 import { stylesGlobal } from '../util/styleGlobal';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateNotification } from '../redux/slice/notificationSlice';
+import BackButton from './BackButton';
+import ActionPAge from './ActionsPage';
 
 
 interface Props {
     visible: boolean;
     setVisible: (visible: boolean) => void;
     notification: apiNotification;
+    setEdit: (notification: apiNotification) => void;
+    setDelete: (id: number) => void;
+
 }
 
-export default function ModalNotification({ visible, setVisible, notification }: Props) {
+export default function ModalNotification({ visible, setVisible, notification, setDelete, setEdit }: Props) {
     const user = useSelector((state: any) => state.user.user);
     const dispatch = useDispatch();
 
@@ -28,20 +33,28 @@ export default function ModalNotification({ visible, setVisible, notification }:
             visible={visible}
             animationType="slide"
             onRequestClose={() => setVisible(false)}
+
         >
+            <BackButton
+                nameOldScreen='Notification'
+                nameScreen='Éditer notification'
+                onPress={() => setVisible(false)}
+            />
             <View
                 style={stylesGlobal.padding}
 
             >
 
-                <Icon
-                    onPress={() => setVisible(false)}
-                    containerStyle={{ padding: 10, backgroundColor: "red", borderRadius: 50, width: 50, height: 50, alignItems: "center" }}
-                    name="left"
-                    type='antdesign'
-                    size={30}
-                    iconStyle={{ alignSelf: "center", fontWeight: "bold" }}
-                    color="black"
+                <ActionPAge
+                    onPressDelete={() => {
+                        setVisible(false)
+                        setDelete(notification.id)
+                    }}
+                    onPressEdit={() => {
+                        setVisible(false)
+                        setEdit(notification)
+                    }}
+
                 />
 
 

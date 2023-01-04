@@ -1,34 +1,56 @@
-import { Button, Icon } from '@rneui/base';
-import { useState, useEffect } from 'react';
+import { Icon } from '@rneui/base';
+import { useState } from 'react';
 import React, { View, Text, StyleSheet, Modal, } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useSelector, useDispatch } from 'react-redux';
-import { setData } from '../../redux/slice/customersSlice';
-import { UpdateCustomer } from '../../api/customers';
-import { Customer } from '../../interface';
-import { CustomerAdd } from '..';
-import { CustomButton } from '../../components';
-import { stylesGlobal } from '../../util/styleGlobal';
+import { Customer } from '../interface';
+import { CustomerAdd } from '../Screen';
+import { BackButton, CustomButton } from '.';
+import { stylesGlobal } from '../util/styleGlobal';
+import ActionPAge from './ActionsPage';
+
+interface Props {
+    visible: boolean;
+    setVisible: (visible: boolean) => void;
+    customer: Customer;
+    setEdit: (customer: Customer) => void;
+    setDelete: (customer: Customer) => void;
+}
+
+export default function CustomerDetails({ visible, setVisible, customer, setDelete, setEdit }: Props) {
 
 
-
-export default function CustomerDetails(props: any) {
-
-    const [customer, setCustomer] = useState<Customer>(props.route.params.customer);
     const [modalVisible, setModalVisible] = useState(false);
 
-    const user = useSelector((state: any) => state.user);
-    const customers = useSelector((state: any) => state.customers);
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        const curentCustomer = customers.customers.find((customer: Customer) => customer.id === props.route.params.customer.id);
-        setCustomer(curentCustomer);
-
-    }, [customers])
-
     return (
-        <SafeAreaView style={{ padding: 8 }} >
+        <Modal
+
+            visible={visible}
+            animationType="slide"
+            onRequestClose={() => setVisible(false)}
+
+        >
+
+            <BackButton
+                nameOldScreen='Clients'
+                nameScreen='Détails client'
+                onPress={() => setVisible(false)}
+
+            />
+
+            <ActionPAge
+                onPressDelete={() => {
+                    setVisible(false)
+
+                    setDelete(customer)
+
+                }}
+                onPressEdit={() => {
+                    setVisible(false)
+                    setEdit(customer)
+
+
+                }}
+
+            />
             <View style={[stylesGlobal.container, stylesGlobal.padding]}>
                 <View>
                     <Text style={styles.title}>{customer.attributes.nom}</Text>
@@ -104,32 +126,10 @@ export default function CustomerDetails(props: any) {
                 setModalView={setModalVisible}
                 curentCustomer={customer}
             />
-        </SafeAreaView >
+        </Modal >
     );
 
-    function updateCustomerStatus(newStatus: string) {
 
-        const newCustomer = {
-            ...customer,
-            attributes: {
-                ...customer.attributes,
-                statut: newStatus
-            }
-        }
-        setModalVisible(false);
-        console.debug('newCustomer', newCustomer);
-
-
-        UpdateCustomer(newCustomer, user.user).then((_customerUpdated) => {
-
-            const index = customers.customers.findIndex((customer: Customer) => customer.id === _customerUpdated.id);
-            const _newCustomers = [...customers.customers];
-            _newCustomers[index] = _customerUpdated;
-            dispatch(setData(_newCustomers));
-            setCustomer(_customerUpdated);
-        }).catch((error) => { console.error(error) });
-
-    }
 
 
 }

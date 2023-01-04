@@ -53,9 +53,9 @@ export default function CustomersAdd({ curentCustomer, isModalView, setModalView
 
     const [curentViewForm, setCurentViewForm] = useState<ViewForm>({ view: "info" });
     const closeModal = () => {
+        setForm(resetForm());
         setModalView(false);
         setLoading(false);
-        setForm(getDefaultValueForm(undefined));
     }
 
     useEffect(() => {
@@ -236,7 +236,7 @@ export default function CustomersAdd({ curentCustomer, isModalView, setModalView
                     icon={undefined} />
 
                 <CustomButton
-                    label={curentCustomer !== null ? "Modifier" : "Ajouter"}
+                    label={curentCustomer !== undefined ? "Modifier" : "Ajouter"}
                     disabled={getMinimumRequiredFields(form)}
                     icon={undefined}
                     onPress={() => SubmitCustomer()}

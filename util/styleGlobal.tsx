@@ -20,13 +20,30 @@ export const stylesGlobal = StyleSheet.create({
         textAlign: 'center',
         marginBottom: 10
     },
-    colorPrimary: {},
-    colorSecondary: {},
-    colorSuccess: {},
-    colorDanger: {},
-    colorWarning: {},
-    colorInfo: {},
-    colorLight: {},
-    colorDark: {},
+    colorPrimary: {
+        color: 'blue'
+    },
+    colorSecondary: {
+        color: 'grey'
+    },
+    colorSuccess: {
+        color: 'green'
+    },
+    colorDanger: {
+        color: 'red'
+    },
+    colorWarning: {
+        color: 'orange'
+    },
+    colorInfo: {
+        color: 'blue'
+    },
+
+    colorLight: {
+        color: 'white'
+    },
+    colorDark: {
+        color: 'black'
+    },
 
 });
