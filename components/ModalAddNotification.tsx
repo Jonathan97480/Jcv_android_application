@@ -66,8 +66,9 @@ export default function ModalAddNotification({ visible, setVisible, notification
     const closeModal = () => {
         setForm(resetForm());
         setDate(new Date());
-        setVisible(false)
         setLoading(false);
+        setVisible(false)
+
     }
 
     return (
@@ -82,6 +83,11 @@ export default function ModalAddNotification({ visible, setVisible, notification
             <View style={[stylesGlobal.padding, { justifyContent: 'center', minHeight: "100%" }]}>
                 <View style={{ backgroundColor: "#fff", elevation: 5, borderRadius: 5, padding: 10 }}>
 
+                    {
+                        loading &&
+                        <ActivityIndicator animating={loading} size="large" color="#000" style={{ position: "absolute", top: "40%", left: "40%", zIndex: 10 }} />
+                    }
+
                     <Input
                         label="Titre"
                         value={form.title}
@@ -95,7 +101,7 @@ export default function ModalAddNotification({ visible, setVisible, notification
                         errorMessage={form.errorDescription}
                     />
                     <View style={{ justifyContent: "flex-start", alignItems: "flex-start" }}>
-                        <Text>Répéter la notification tous les jour jusque sa validation </Text>
+                        <Text>Répéter la notification tant quelle n'est pas valider</Text>
                         <Switch value={form.isRepeat} onValueChange={(Boolean) => {
                             setForm({ ...form, isRepeat: Boolean })
                         }} />
@@ -138,7 +144,6 @@ export default function ModalAddNotification({ visible, setVisible, notification
                 console.log("BIG RES", res);
                 dispatch(updateNotification(res))
                 closeModal();
-
             }).catch((err) => {
                 console.error(err);
                 closeModal();

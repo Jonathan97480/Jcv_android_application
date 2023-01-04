@@ -5,6 +5,9 @@ export const stylesGlobal = StyleSheet.create({
     container: {
         flexDirection: 'column',
         justifyContent: 'space-between',
+        maxHeight: '100%',
+        minHeight: '100%',
+        width: '100%',
 
     },
     padding: {

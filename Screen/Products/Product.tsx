@@ -3,7 +3,7 @@ import { StyleSheet, View, ScrollView, ActivityIndicator, Text } from 'react-nat
 import { useDispatch } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GetAllProductsByCategory } from '../../api';
-import { CardProduct } from '../../components';
+import { CardProduct, IndicatorActivity } from '../../components';
 import { apiProduct } from '../../interface';
 import { stylesGlobal } from '../../util/styleGlobal';
 
@@ -43,28 +43,29 @@ export default function Products(props: any) {
 
     return (
         <SafeAreaView style={{ padding: 8 }} >
+            <IndicatorActivity visible={isLoading} />
             <View style={[stylesGlobal.container, stylesGlobal.padding]}>
                 {
-                    isLoading ? <ActivityIndicator /> :
-                        <View>
-                            <View style={[styles.cat, { backgroundColor: catColor }]}>
-                                <Text style={styles.titleCat}>{catName}</Text>
-                            </View>
-                            <Text style={[styles.titleCat, { color: 'black' }]}>{title}</Text>
-                            <ScrollView scrollEnabled={true} showsHorizontalScrollIndicator={false} horizontal={false} >
-                                <View style={styles.container}>
-                                    {
-
-                                        products.map((product) => {
-                                            return (
-                                                <CardProduct products={product} key={product.id} />
-                                            )
-                                        })
-                                    }
-                                </View>
-
-                            </ScrollView >
+                    !isLoading &&
+                    <View>
+                        <View style={[styles.cat, { backgroundColor: catColor }]}>
+                            <Text style={styles.titleCat}>{catName}</Text>
                         </View>
+                        <Text style={[styles.titleCat, { color: 'black' }]}>{title}</Text>
+                        <ScrollView scrollEnabled={true} showsHorizontalScrollIndicator={false} horizontal={false} >
+                            <View style={styles.container}>
+                                {
+
+                                    products.map((product) => {
+                                        return (
+                                            <CardProduct products={product} key={product.id} />
+                                        )
+                                    })
+                                }
+                            </View>
+
+                        </ScrollView >
+                    </View>
                 }
             </View>
         </SafeAreaView>

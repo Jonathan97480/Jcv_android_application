@@ -1,8 +1,8 @@
-import { View, Text, StyleSheet, Image, TextInput, ScrollView, Modal } from 'react-native';
+import { View, Text, StyleSheet, Image, TextInput, ScrollView, Modal, ActivityIndicator } from 'react-native';
 import { Input } from '@rneui/themed';
-import { SafeAreaView } from 'react-native-safe-area-context';
+
 import { Button } from '@rneui/base';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AddCustomer, UpdateCustomer } from '../api/customers';
 import { useSelector, useDispatch } from 'react-redux';
 import { addCustomer, updateCustomer } from '../redux/slice/customersSlice';
@@ -41,64 +41,29 @@ interface ViewForm {
     view: string;
 }
 
-export default function CustomersAdd({ curentCustomer, isModalView, setModalView }: { curentCustomer: Customer | null, isModalView: boolean, setModalView: (value: boolean) => void }) {
+export default function CustomersAdd({ curentCustomer, isModalView, setModalView }: { curentCustomer: Customer | undefined, isModalView: boolean, setModalView: (value: boolean) => void }) {
 
     const user = useSelector((state: any) => state.user);
     const dispatch = useDispatch();
+    const [loading, setLoading] = useState<boolean>(false);
 
     const defaultFormValue: formCustomer = getDefaultValueForm(curentCustomer);
 
     const [form, setForm] = useState<formCustomer>(defaultFormValue);
 
     const [curentViewForm, setCurentViewForm] = useState<ViewForm>({ view: "info" });
+    const closeModal = () => {
+        setModalView(false);
+        setLoading(false);
+        setForm(getDefaultValueForm(undefined));
+    }
 
-    function SubmitCustomer() {
-
-        if (curentCustomer === null) {
-            AddCustomer(form, user.user).then((customer) => {
-
-                if (customer !== undefined) {
-
-                    dispatch(addCustomer(customer));
-                    setModalView(false);
-
-                }
-
-            }).catch((error) => { console.error(error) });
-
-        } else {
-
-            const newCustomer = {
-                ...curentCustomer,
-                attributes: {
-                    ...curentCustomer.attributes,
-                    nom: form.nom,
-                    prenom: form.prenom,
-                    email: form.email,
-                    telephone: parseInt(form.telephone),
-                    faxe: parseInt(form.faxe),
-                    telephone_mobile: parseInt(form.telephone_mobile),
-                    address: form.address,
-                    ville: form.ville,
-                    description: form.description,
-                    code_postal: form.code_postal
-
-                }
-            }
-
-            UpdateCustomer(newCustomer, user.user).then((customer) => {
-
-                if (customer !== undefined) {
-
-                    dispatch(updateCustomer(newCustomer));
-                    setModalView(false);
-
-                }
-
-            }).catch((error) => { console.error(error) });
+    useEffect(() => {
+        if (curentCustomer) {
+            setForm(getDefaultValueForm(curentCustomer));
         }
 
-    }
+    }, [curentCustomer])
 
     return (
         <Modal
@@ -106,7 +71,7 @@ export default function CustomersAdd({ curentCustomer, isModalView, setModalView
             transparent={false}
             visible={isModalView}
             onRequestClose={() => {
-                setModalView(false);
+                closeModal();
             }}
             style={{ padding: 20 }}>
 
@@ -131,7 +96,10 @@ export default function CustomersAdd({ curentCustomer, isModalView, setModalView
 
 
                 <View style={styles.container}>
-
+                    {
+                        loading &&
+                        <ActivityIndicator animating={loading} size="large" color="#000" style={{ position: "absolute", top: "40%", left: "40%", zIndex: 10 }} />
+                    }
 
                     {
                         curentViewForm.view === "info" &&
@@ -276,12 +244,70 @@ export default function CustomersAdd({ curentCustomer, isModalView, setModalView
                 />
 
             </View>
+
         </Modal>
+
+
     )
 
-    function getDefaultValueForm(_curentCustomer: Customer | null): formCustomer {
 
-        return _curentCustomer !== null ? {
+    function SubmitCustomer() {
+        setLoading(true);
+        if (curentCustomer === undefined) {
+            AddCustomer(form, user.user).then((customer) => {
+
+                if (customer !== undefined) {
+
+                    dispatch(addCustomer(customer));
+                    closeModal();
+
+
+                }
+
+            }).catch((error) => {
+                console.error(error)
+                setLoading(false);
+            });
+
+        } else {
+
+            const newCustomer = {
+                ...curentCustomer,
+                attributes: {
+                    ...curentCustomer.attributes,
+                    nom: form.nom,
+                    prenom: form.prenom,
+                    email: form.email,
+                    telephone: parseInt(form.telephone),
+                    faxe: parseInt(form.faxe),
+                    telephone_mobile: parseInt(form.telephone_mobile),
+                    address: form.address,
+                    ville: form.ville,
+                    description: form.description,
+                    code_postal: form.code_postal
+
+                }
+            }
+
+            UpdateCustomer(newCustomer, user.user).then((customer) => {
+
+                if (customer !== undefined) {
+
+                    dispatch(updateCustomer(newCustomer));
+                    closeModal();
+
+                }
+
+            }).catch((error) => {
+                console.error(error)
+                setLoading(false);
+            });
+        }
+
+    }
+    function getDefaultValueForm(_curentCustomer: Customer | undefined): formCustomer {
+
+        return _curentCustomer !== undefined ? {
             nom: _curentCustomer.attributes.nom,
             nomError: '',
             prenom: _curentCustomer.attributes.prenom,
@@ -331,95 +357,92 @@ export default function CustomersAdd({ curentCustomer, isModalView, setModalView
 
         }
     }
-}
 
 
-function getMinimumRequiredFields(form: { [key: string]: any }) {
-    const requiredFields = ['nom', 'prenom'];
 
-    for (const field of requiredFields) {
-        if (form[field] === '') {
-            return true;
+    function getMinimumRequiredFields(form: { [key: string]: any }) {
+        const requiredFields = ['nom', 'prenom'];
+
+        for (const field of requiredFields) {
+            if (form[field] === '') {
+                return true;
+            }
         }
+
+        return false;
     }
 
-    return false;
+    function ValidateInput(form: { [key: string]: any }, setForm: (value: any) => void) {
+
+        const newForm = { ...form };
+        /* clear Error */
+        newForm.nomError = '';
+        newForm.prenomError = '';
+        newForm.emailError = '';
+        newForm.telephoneError = '';
+        newForm.faxeError = '';
+        newForm.telephone_mobileError = '';
+        newForm.addressError = '';
+        newForm.villeError = '';
+        newForm.descriptionError = '';
+        newForm.code_postalError = '';
+
+
+        /* validate  */
+        if (!valadateEmail(form.email) && form.email !== '') {
+
+            newForm.emailError = 'Email invalide';
+
+
+        }
+
+        if (!validatePhone(form.telephone) && form.telephone !== '') {
+
+            newForm.telephoneError = 'Téléphone invalide';
+
+        }
+
+        if (!validatePhone(form.telephone_mobile) && form.telephone_mobile !== '') {
+
+            newForm.telephone_mobileError = 'Téléphone mobile invalide';
+
+        }
+
+        if (!validatePhone(form.faxe) && form.faxe !== '') {
+
+            newForm.faxeError = 'Fax invalide';
+
+        }
+
+        if (!validatePostalCode(form.code_postal) && form.code_postal !== '') {
+
+            newForm.code_postalError = 'Code postal invalide';
+
+        }
+
+        setForm(newForm);
+
+
+    }
+
+
+
+    function valadateEmail(email: string) {
+        const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
+    }
+
+    function validatePhone(phone: string) {
+        const re = /^\d{10}$/;
+        return re.test(String(phone));
+    }
+
+    function validatePostalCode(postalCode: string) {
+        const re = /^\d{5}$/;
+        return re.test(String(postalCode));
+    }
+
 }
-
-
-
-
-
-function ValidateInput(form: { [key: string]: any }, setForm: (value: any) => void) {
-
-    const newForm = { ...form };
-    /* clear Error */
-    newForm.nomError = '';
-    newForm.prenomError = '';
-    newForm.emailError = '';
-    newForm.telephoneError = '';
-    newForm.faxeError = '';
-    newForm.telephone_mobileError = '';
-    newForm.addressError = '';
-    newForm.villeError = '';
-    newForm.descriptionError = '';
-    newForm.code_postalError = '';
-
-
-    /* validate  */
-    if (!valadateEmail(form.email) && form.email !== '') {
-
-        newForm.emailError = 'Email invalide';
-
-
-    }
-
-    if (!validatePhone(form.telephone) && form.telephone !== '') {
-
-        newForm.telephoneError = 'Téléphone invalide';
-
-    }
-
-    if (!validatePhone(form.telephone_mobile) && form.telephone_mobile !== '') {
-
-        newForm.telephone_mobileError = 'Téléphone mobile invalide';
-
-    }
-
-    if (!validatePhone(form.faxe) && form.faxe !== '') {
-
-        newForm.faxeError = 'Fax invalide';
-
-    }
-
-    if (!validatePostalCode(form.code_postal) && form.code_postal !== '') {
-
-        newForm.code_postalError = 'Code postal invalide';
-
-    }
-
-    setForm(newForm);
-
-
-}
-
-
-
-function valadateEmail(email: string) {
-    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(email).toLowerCase());
-}
-
-function validatePhone(phone: string) {
-    const re = /^\d{10}$/;
-    return re.test(String(phone));
-}
-
-function validatePostalCode(postalCode: string) {
-    const re = /^\d{5}$/;
-    return re.test(String(postalCode));
-}
-
 
 
 const styles = StyleSheet.create({

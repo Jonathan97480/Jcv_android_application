@@ -1,6 +1,6 @@
 import { Button, Icon, ListItem } from "@rneui/base";
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 
 
 interface Props {
@@ -12,11 +12,12 @@ interface Props {
     onPress: () => void;
     onDeletedPress?: () => void;
     onEditPress?: () => void;
+    iconLeft?: JSX.Element;
 
 }
 
-export default function MicroCard({ title, status, description, onPress, chevronDisabled = false, isSwipeable = false, onDeletedPress, onEditPress }: Props) {
-
+export default function MicroCard({ title, status, description, onPress, chevronDisabled = false, isSwipeable = false, onDeletedPress, onEditPress, iconLeft }: Props) {
+    const [loading, setLoading] = React.useState(false);
     return (
         <>
             {
@@ -42,7 +43,9 @@ export default function MicroCard({ title, status, description, onPress, chevron
                                 containerStyle={{ borderRadius: 5, }}
                                 title="Delete"
                                 onPress={() => {
+                                    setLoading(true);
                                     reset();
+
 
                                     if (onDeletedPress)
                                         onDeletedPress();
@@ -59,14 +62,11 @@ export default function MicroCard({ title, status, description, onPress, chevron
                             <View
                                 style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}
                             >
-                                <Icon
+                                {
+                                    loading &&
+                                    <ActivityIndicator size="small" color="#00ff00" />}
 
-                                    name="warning"
-                                    color="red"
-                                    size={30}
-                                    containerStyle={{ marginRight: 10 }}
-
-                                />
+                                {iconLeft && iconLeft}
 
                                 <View style={[styles.microCard, { justifyContent: 'space-between', alignItems: 'flex-start' }]}>
 

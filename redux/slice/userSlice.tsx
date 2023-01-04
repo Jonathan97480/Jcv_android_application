@@ -29,7 +29,8 @@ export const userSlice = createSlice({
 
         }, setIsLogged: (state, action) => {
             state.isLogged = action.payload;
-        }
+        },
+ 
     }
 })
 

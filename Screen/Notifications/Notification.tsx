@@ -11,6 +11,7 @@ import { stylesGlobal } from '../../util/styleGlobal';
 import { ScrollView } from 'react-native-gesture-handler';
 import { DeleteNotification } from '../../api/notification';
 import { filtersNotifications, fixeText, formatDateToForDisplay } from '../../util/function';
+import { Icon } from '@rneui/base';
 
 
 
@@ -87,6 +88,15 @@ export default function Notification() {
                                         setCurentNotification(notification);
                                         setModalView(true);
                                     }}
+                                    iconLeft={
+                                        <Icon
+                                            style={{ marginRight: 10 }}
+                                            name="bell"
+                                            size={40}
+                                            type="feather"
+                                            color="#2e64e5"
+                                        />
+                                    }
                                     onDeletedPress={() => {
 
                                         DeleteNotification(notification.id, user).then((res) => {
@@ -107,6 +117,7 @@ export default function Notification() {
                 <CustomButton
                     label="Ajouter une notification"
                     onPress={() => {
+                        setCurentNotification(undefined);
                         setModalViewAddNotification(true);
                     }}
                     icon={undefined}

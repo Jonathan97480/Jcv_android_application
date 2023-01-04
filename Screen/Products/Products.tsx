@@ -1,16 +1,16 @@
 
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, View, ActivityIndicator, Text, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GetAllCategories, GetAllNotifications, GetCustomers, UserLogin } from '../../api';
 import { apiCategories, apiProduct } from '../../interface';
 import * as SplashScreen from 'expo-splash-screen';
-import { SousCategoryCard } from '../../components';
-import { useDispatch, useSelector } from 'react-redux'
+import { IndicatorActivity, SousCategoryCard } from '../../components';
+import { useDispatch } from 'react-redux'
 import { stylesGlobal } from '../../util/styleGlobal';
 import { setAllNotification } from '../../redux/slice/notificationSlice';
-import { login, setIsLogged } from '../../redux/slice/userSlice';
-import { setData, setLoading } from '../../redux/slice/customersSlice';
+import { login } from '../../redux/slice/userSlice';
+import { setData } from '../../redux/slice/customersSlice';
 import { filtersNotifications } from '../../util/function';
 import { pushNotification } from '../../components/NotificationPush';
 
@@ -119,33 +119,34 @@ export default function Products() {
 
 
     return (
-        <SafeAreaView style={{ padding: 8 }} onLayout={onLayoutRootView}>
+        <SafeAreaView onLayout={onLayoutRootView}>
+            <IndicatorActivity visible={isLoading} />
             <View style={[stylesGlobal.container, stylesGlobal.padding]}>
 
                 <ScrollView  >
 
                     {
-                        isLoading ? <ActivityIndicator /> :
-                            categories.map((categorie) => {
-                                return (
-                                    <View key={categorie.id}>
-                                        <View style={[styles.cat, { backgroundColor: categorie.attributes.color }]}>
-                                            <Text style={styles.titleCat}>{categorie.attributes.nom}</Text>
-                                        </View>
-                                        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} >
-                                            {
-                                                categorie.attributes.sous_categories.data.map((sousCategorie) => {
-                                                    return (
-                                                        <SousCategoryCard sousCategory={sousCategorie} key={sousCategorie.id} />
-                                                    )
-                                                })
-                                            }
-                                        </ScrollView>
+                        !isLoading &&
+                        categories.map((categorie) => {
+                            return (
+                                <View key={categorie.id}>
+                                    <View style={[styles.cat, { backgroundColor: categorie.attributes.color }]}>
+                                        <Text style={styles.titleCat}>{categorie.attributes.nom}</Text>
                                     </View>
+                                    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} >
+                                        {
+                                            categorie.attributes.sous_categories.data.map((sousCategorie) => {
+                                                return (
+                                                    <SousCategoryCard sousCategory={sousCategorie} key={sousCategorie.id} />
+                                                )
+                                            })
+                                        }
+                                    </ScrollView>
+                                </View>
 
-                                )
+                            )
 
-                            })
+                        })
                     }
 
                 </ScrollView>

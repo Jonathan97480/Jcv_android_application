@@ -105,4 +105,24 @@ export const AddCustomer = async (form: formCustomer, user: User): Promise<Custo
 
 }
 
+export const DeleteCustomer = async (customer: Customer, user: User): Promise<boolean> => {
 
+    const header = new Headers();
+    header.append('Authorization', 'Bearer ' + user.jwt);
+    header.append('Content-Type', 'application/json');
+
+
+    const requestOptions = {
+        method: 'DELETE',
+        headers: header,
+
+
+    }
+
+
+    const response = await fetch(`${API_URL}/api/clients/${customer.id}`, requestOptions)
+    const data = await response.json();
+
+
+    return data.status == 200;
+}
