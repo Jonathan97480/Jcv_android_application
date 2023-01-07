@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 
 import { StyleSheet, Text, View, ScrollView, Alert, } from 'react-native';
-import { Icon, Input } from '@rneui/themed';
+import { Icon, Input, Image } from '@rneui/themed';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootCustomersStackParamList } from '../../interface/navigation';
@@ -13,6 +13,9 @@ import { stylesGlobal } from '../../util/styleGlobal';
 import { CustomButton, MicroCard } from '../../components';
 import { DeleteCustomer } from '../../api/customers';
 import { deletedCustomer } from '../../redux/slice/customersSlice';
+import TitelScreen from '../../components/TitelScreen';
+import SearchBar from '../../components/SearchBar';
+import { formatTextStatusCustomer, getColorStatusCustomers } from '../../util/function';
 
 
 type ProfileScreenNavigationProp = StackNavigationProp<
@@ -91,40 +94,49 @@ export default function Customers() {
 
 
     return (
-        <SafeAreaView  >
+        <SafeAreaView style={[styles.container, stylesGlobal.colorBackGroundApp]} >
 
             <View style={[stylesGlobal.container, stylesGlobal.padding]}>
-
-                <Input
-                    rightIcon={
-                        <Icon
-                            type='font-awesome'
-                            name='search'
-                            color={'#000'}
-                            size={17}
+                <TitelScreen
+                    titre="Clients"
+                    image={
+                        <Image
+                            style={{ width: 38, height: 38, tintColor: '#1F1F35', marginLeft: 10 }}
+                            source={require('../../assets/customers-icon.png')}
                         />
                     }
-                    onChange={(e) => {
-                        const value = e.nativeEvent.text;
+                />
+
+                <SearchBar
+                    onChangeText={(e) => {
+                        const value = e;
                         const filteredCustomers = customers.filter((customer) => {
                             return customer.attributes.nom.toLowerCase().includes(value.toLowerCase())
                         })
                         setCustomersList(filteredCustomers)
                     }}
-                    containerStyle={styles.inputSearch}
-                    inputStyle={{ textDecorationLine: 'none' }}
 
-                    placeholder="Rechercher un client" />
+
+                    placeholder="Rechercher un client"
+
+                />
+
 
                 <ScrollView
                     style={{
-                        maxHeight: '80%',
-                        minHeight: '80%',
+                        maxHeight: '75%',
+                        minHeight: '70%',
+                        marginBottom: 17,
                     }}
                 >
-                    <View style={[stylesGlobal.container, stylesGlobal.padding]}>
+                    <View style={[stylesGlobal.container]}>
 
-                        <Text style={stylesGlobal.title}>Liste des clients</Text>
+                        <Text style={{
+                            fontSize: 15,
+                            fontFamily: 'Roboto-SlabBold',
+                            color: '#1F1F35',
+                            marginBottom: 10,
+                        }}>Liste des clients</Text>
 
 
                         {
@@ -134,15 +146,16 @@ export default function Customers() {
                                     <MicroCard
                                         key={index + "-customer"}
                                         title={customer.attributes.nom}
-                                        status={customer.attributes.statut}
+                                        status={{
+                                            text: formatTextStatusCustomer(customer.attributes.statut),
+                                            color: getColorStatusCustomers(customer.attributes.statut)
+                                        }}
                                         isSwipeable={true}
                                         iconLeft={
-                                            <Icon
-                                                style={{ marginRight: 5 }}
-                                                type='font-awesome'
-                                                name='user'
-                                                color={'blue'}
-                                                size={40}
+                                            <Image
+                                                source={require('../../assets/customers-icon.png')}
+                                                resizeMode='cover'
+                                                style={{ width: 34, height: 34, tintColor: '#1F1F35', marginRight: 5 }}
                                             />
                                         }
                                         onPress={() => {
@@ -166,24 +179,29 @@ export default function Customers() {
 
                     </View>
                 </ScrollView>
-                <CustomButton
-                    label={'Ajouter un client'}
-                    onPress={() => {
+                <View style={{ flexDirection: "row", justifyContent: 'center', alignItems: 'center' }}>
+                    <CustomButton
+                        label={{
+                            text: 'Ajouter un client',
+                        }}
+                        btnType={'solid'}
+                        onPress={() => {
 
-                        setIsModalView(true)
-                        setCurentCustomer(undefined)
-                    }}
-                    icon={
-                        <Icon
-                            type='font-awesome'
-                            name='user-plus'
-                            color={'white'}
-                            size={17}
-                            containerStyle={{ marginRight: 5 }}
+                            setIsModalView(true)
+                            setCurentCustomer(undefined)
+                        }}
+                        icon={
+                            <Icon
+                                type='font-awesome'
+                                name='user-plus'
+                                color={'white'}
+                                size={17}
+                                containerStyle={{ marginRight: 5 }}
 
-                        />
-                    }
-                />
+                            />
+                        }
+                    />
+                </View>
 
             </View>
             <CustomerAdd
@@ -222,3 +240,4 @@ const styles = StyleSheet.create({
     },
 
 });
+

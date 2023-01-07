@@ -5,6 +5,7 @@ import { API_URL } from '@env'
 import { RootProductStackParamList } from "../interface";
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { Gesture, TouchableOpacity } from 'react-native-gesture-handler';
+import { fixeText } from "../util/function";
 
 
 
@@ -48,29 +49,45 @@ export default function SousCategoryCard(props: Props) {
 
     return (
 
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} >
 
-            <TouchableOpacity onPress={() => {
 
-                navigation.navigate("Product", { CatId: sousCategory.id, title: sousCategory.attributes.name });
+        <TouchableOpacity onPress={() => {
 
-            }}  >
-                <View style={styles.container}
-                    key={sousCategory.id}
-                >
-                    {
-                        !sousCategory.attributes.image.data ? null :
-                            <Image style={styles.image} source={{ uri: API_URL + sousCategory.attributes.image.data.attributes.url }} resizeMode="cover"
-                            />
-                    }
-                    <Text style={styles.title}>{sliceTitle(sousCategory.attributes.name)}</Text>
+            navigation.navigate("Product", { CatId: sousCategory.id, title: sousCategory.attributes.name });
+        }}  {...{
+            tap
+        }}
+            style={styles.container}
+        >
+            <View
+                style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+                key={sousCategory.id}
+            >
+                {
+                    !sousCategory.attributes.image.data ? null :
+                        <Image style={styles.image} source={{ uri: API_URL + sousCategory.attributes.image.data.attributes.url }} resizeMode="cover"
+                        />
+                }
+                <View style={{
+                    position: "absolute",
+                    backgroundColor: "#D77333",
+                    borderRadius: 5,
+                    width: "90%",
+                    paddingHorizontal: 10,
+                    paddingVertical: 5,
+                    elevation: 5,
 
+                }}>
+                    <Text style={styles.title}>{fixeText(sousCategory.attributes.name, 10, '...')}</Text>
                 </View>
-            </TouchableOpacity>
+            </View>
+        </TouchableOpacity>
 
 
 
-        </ScrollView>
 
     )
 }
@@ -79,22 +96,30 @@ const sliceTitle = (title: string) => {
 }
 const styles = StyleSheet.create({
     container: {
-        width: 126,
-        height: 135,
+
+        width: 101,
+        height: 96,
         position: "relative",
-        marginRight: 10,
-        marginTop: 20,
+        borderRadius: 5,
+        backgroundColor: "#fff",
+        elevation: 5,
+        marginHorizontal: 10,
     },
     title: {
-
         textAlign: "center",
-
         textTransform: "capitalize",
+        fontSize: 10,
+        fontWeight: "bold",
+        color: "#fff",
+
+
 
     },
     image: {
-        width: 126,
-        height: 98,
+        width: 101,
+        height: 96,
+
+
     }
 
 });

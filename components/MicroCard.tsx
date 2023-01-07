@@ -1,18 +1,22 @@
 import { Button, Icon, ListItem } from "@rneui/base";
 import React from "react";
 import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
+import { color } from "react-native-reanimated";
 
 
 interface Props {
     title: string;
-    status?: string;
+    status?: {
+        color: string;
+        text: string;
+    };
     description?: string;
     chevronDisabled?: boolean;
     isSwipeable?: boolean;
     onPress: () => void;
     onDeletedPress?: () => void;
     onEditPress?: () => void;
-    iconLeft?: JSX.Element;
+    iconLeft?: React.ReactNode;
 
 }
 
@@ -26,7 +30,16 @@ export default function MicroCard({ title, status, description, onPress, chevron
                         onPress={onPress}
 
                         containerStyle={
-                            [styles.microCard, styles.decoration, { minHeight: 60, minWidth: "100%", maxWidth: '100%' }]
+                            [styles.microCard, styles.decoration,
+                            {
+                                minHeight: 47,
+                                minWidth: "100%",
+                                maxWidth: '100%',
+                                borderRadius: 5,
+                                overflow: 'hidden',
+                                marginBottom: 10,
+
+                            }]
 
                         }
                         leftContent={(reset) => (
@@ -68,16 +81,66 @@ export default function MicroCard({ title, status, description, onPress, chevron
 
                                 {iconLeft && iconLeft}
 
-                                <View style={[styles.microCard, { justifyContent: 'space-between', alignItems: 'flex-start' }]}>
+                                {description && <View style={[styles.microCard, { justifyContent: 'space-between', alignItems: 'flex-start' }]}>
 
                                     <View style={[styles.microCard, { flexDirection: 'row', justifyContent: 'space-between', maxWidth: '85%' }]} >
-                                        <ListItem.Title>{title}</ListItem.Title>
-                                        <ListItem.Title>{status}</ListItem.Title>
+                                        <ListItem.Title
+                                            style={{
+                                                fontSize: 15,
+                                                fontFamily: 'Roboto-SlabBold',
+                                                color: '#36393E',
+                                                textTransform: 'capitalize',
+                                            }}
+                                        >{title}</ListItem.Title>
+                                        <ListItem.Title
+                                            style={
+                                                {
+                                                    fontSize: 18,
+                                                    fontFamily: 'Roboto-SlabBold',
+                                                    color: status?.color,
+                                                    textTransform: 'capitalize',
+                                                }
+                                            }
+                                        >{status?.text}</ListItem.Title>
 
                                     </View>
-                                    <ListItem.Subtitle>{description}</ListItem.Subtitle>
+                                    <ListItem.Subtitle
+                                        style={{
+                                            fontSize: 10,
+                                            fontFamily: 'Roboto-SlabBold',
+                                            color: '#36393E',
+                                            textTransform: 'capitalize',
+                                        }}
 
-                                </View>
+                                    >{description}</ListItem.Subtitle>
+
+                                </View>}
+                                {
+                                    !description &&
+                                    <View style={[styles.microCard, { justifyContent: 'space-between', alignItems: 'flex-start' }]}>
+
+                                        <View style={[styles.microCard, { flexDirection: 'row', justifyContent: 'space-between', maxWidth: '85%' }]} >
+                                            <ListItem.Title
+                                                style={{
+                                                    fontSize: 15,
+                                                    fontFamily: 'Roboto-SlabBold',
+                                                    color: '#5E5E5E',
+                                                    textTransform: 'capitalize',
+                                                }}
+                                            >{title}</ListItem.Title>
+                                            <ListItem.Title
+                                                style={
+                                                    {
+                                                        color: status?.color,
+                                                    }
+                                                }
+                                            >{status?.text}</ListItem.Title>
+
+                                        </View>
+
+
+                                    </View>
+                                }
                             </View>
 
 
@@ -91,7 +154,7 @@ export default function MicroCard({ title, status, description, onPress, chevron
 
                         <View style={[styles.microCard, { flexDirection: 'row', }]}>
                             <Text>{title}</Text>
-                            <Text>{status}</Text>
+                            <Text>{status?.text}</Text>
                             {
                                 !chevronDisabled &&
                                 <Icon
@@ -133,7 +196,6 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         backgroundColor: "#fff",
         elevation: 2,
-        marginBottom: 10,
     }
 
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity } from "react-native";
 
 
@@ -19,6 +19,7 @@ interface Props {
         colorInactive?: string;
         isUnderlineActive?: boolean;
     }
+    value?: string;
 
 }
 
@@ -29,7 +30,7 @@ interface Item {
 
 }
 
-export default function Filters({ filter, params, label, onPress }: Props) {
+export default function Filters({ filter, params, label, onPress, value }: Props) {
 
 
 
@@ -44,6 +45,11 @@ export default function Filters({ filter, params, label, onPress }: Props) {
         setItems(newItems);
     }
 
+    useEffect(() => {
+        if (value) {
+            fixeActiveItem(value);
+        }
+    }, [value])
 
 
 
@@ -91,13 +97,16 @@ export default function Filters({ filter, params, label, onPress }: Props) {
 }
 
 const styles = StyleSheet.create({
-    container: {},
+    container: {
+        marginBottom: 17
+    },
     text: {
-
+        fontSize: 15,
+        fontFamily: "Roboto-SlabBold"
     },
     label: {
         fontSize: 18,
-        fontWeight: "bold"
+        fontFamily: "Roboto-SlabBold"
     },
     liste: {
         flexDirection: "row",
@@ -115,6 +124,7 @@ const styles = StyleSheet.create({
 
         marginVertical: 2
     },
+
 
 
 

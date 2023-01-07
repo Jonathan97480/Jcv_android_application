@@ -11,7 +11,8 @@ import { stylesGlobal } from '../../util/styleGlobal';
 import { ScrollView } from 'react-native-gesture-handler';
 import { DeleteNotification } from '../../api/notification';
 import { filtersNotifications, fixeText, formatDateToForDisplay } from '../../util/function';
-import { Icon } from '@rneui/base';
+import { Icon, Image } from '@rneui/base';
+import TitelScreen from '../../components/TitelScreen';
 
 
 
@@ -68,13 +69,29 @@ export default function Notification() {
         setFilterNotifications(activeNotifications);
     }, [notificationsReducer]);
 
+
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={[styles.container, stylesGlobal.colorBackGroundApp]}>
             <View style={[stylesGlobal.container, stylesGlobal.padding]} >
-                <Text style={{ marginBottom: 20, fontWeight: "bold", textAlign: "center", fontSize: 20 }}>Liste des notifications</Text>
+
+                <TitelScreen
+                    titre="Notifications"
+                    image={<Image source={require('../../assets/notification-icon.png')}
+                        resizeMode="cover"
+                        style={{
+                            width: 34,
+                            height: 34,
+                            tintColor: "#1F1F35",
+                            marginLeft: 5,
+                        }}
+                    />}
+
+                />
+
+
 
                 <Filters
-                    label='Filtrer par'
+                    label='Filtres'
                     filter={[
                         { label: "Active", isDefault: true, value: "active" },
                         { label: "Validée", value: "validated" },
@@ -83,7 +100,8 @@ export default function Notification() {
                     ]}
                     params={
                         {
-                            colorActive: "#2e64e5",
+                            colorActive: "#9747FF",
+                            colorInactive: "#55585D",
                             isUnderlineActive: true,
                         }
                     }
@@ -93,7 +111,14 @@ export default function Notification() {
                         setFilterNotifications(newNotificationFilter);
                     }}
                 />
-                <ScrollView>
+                <ScrollView
+                    style={
+                        {
+                            maxHeight: '75%',
+                            minHeight: '75%',
+                        }
+                    }
+                >
                     {
                         filterNotifications.map((notification: apiNotification) => {
                             return (
@@ -101,7 +126,10 @@ export default function Notification() {
                                     key={notification.id + "-notification"}
                                     title={fixeText(notification.title, 25, "...")}
                                     description={notification.description}
-                                    status={formatDateToForDisplay(new Date(notification.date))}
+                                    status={{
+                                        text: formatDateToForDisplay(new Date(notification.date)),
+                                        color: "#1F1F35",
+                                    }}
                                     chevronDisabled={true}
                                     isSwipeable={true}
                                     onPress={() => {
@@ -109,12 +137,15 @@ export default function Notification() {
                                         setModalView(true);
                                     }}
                                     iconLeft={
-                                        <Icon
-                                            style={{ marginRight: 10 }}
-                                            name="bell"
-                                            size={40}
-                                            type="feather"
-                                            color="#2e64e5"
+                                        <Image
+                                            source={require('../../assets/notification-icon.png')}
+                                            resizeMode="cover"
+                                            style={{
+                                                width: 34,
+                                                height: 34,
+                                                tintColor: "#1F1F35",
+                                                marginRight: 5,
+                                            }}
                                         />
                                     }
                                     onDeletedPress={() => {
@@ -130,14 +161,20 @@ export default function Notification() {
                         )
                     }
                 </ScrollView>
-                <CustomButton
-                    label="Ajouter une notification"
-                    onPress={() => {
-                        setCurentNotification(undefined);
-                        setModalViewAddNotification(true);
-                    }}
-                    icon={undefined}
-                />
+                <View style={stylesGlobal.center}>
+                    <CustomButton
+                        label={
+                            {
+                                text: "Ajouter une notification",
+                            }
+                        }
+                        onPress={() => {
+                            setCurentNotification(undefined);
+                            setModalViewAddNotification(true);
+                        }}
+                        icon={undefined}
+                    />
+                </View>
 
             </View>
             {
@@ -163,7 +200,7 @@ export default function Notification() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+
         alignItems: 'center',
         justifyContent: 'center',
     },

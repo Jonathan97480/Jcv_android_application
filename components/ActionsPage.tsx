@@ -16,7 +16,7 @@ export default function ActionPAge({ onPressEdit, onPressDelete }: Props) {
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.btnStyle} onPress={onPressDelete}>
-                <Text style={[styles.textStyle, stylesGlobal.colorDanger]}>supprimer</Text>
+                <Text style={[styles.textStyle, stylesGlobal.colorDanger]}>Supprimer</Text>
             </TouchableOpacity>
         </View>
     )
@@ -33,6 +33,9 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
     },
     btnStyle: {},
-    textStyle: {},
+    textStyle: {
+        fontFamily: "Roboto-SlabBold",
+        fontSize: 20,
+    },
 
 })

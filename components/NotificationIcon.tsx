@@ -1,19 +1,19 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, StyleProp, ImageStyle } from 'react-native';
 import { useSelector } from 'react-redux';
 import { apiNotification } from '../interface/api';
 import { filtersNotifications } from '../util/function';
 
 
 
-export default function NotificationIcon() {
+export default function NotificationIcon({ style }: { style?: StyleProp<ImageStyle> }) {
 
     const notification: apiNotification[] = useSelector((state: any) => state.notification.notification);
     const activeNotifications: apiNotification[] = filtersNotifications(notification, 'active');
     return (
         <View style={styles.container}>
 
-            <Image source={require('../assets/notification-icon.png')} style={styles.image} />
+            <Image source={require('../assets/notification-icon.png')} style={[styles.image, style]} />
             {
                 activeNotifications !== null && activeNotifications !== undefined && activeNotifications && activeNotifications.length > 0 ?
                     <View style={styles.pastille}>

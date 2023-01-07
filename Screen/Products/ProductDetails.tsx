@@ -46,7 +46,11 @@ export default function ProductDetails(props: any) {
                     <Text>{Product.attributes.description}</Text>
 
                     <CustomButton
-                        label="Voir la fiche du produit"
+                        label={
+                            {
+                                text: "Voir la fiche du produit",
+                            }
+                        }
                         onPress={() => {
                             OpenAnything.Pdf(path);
                         }}

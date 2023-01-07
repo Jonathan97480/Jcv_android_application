@@ -10,6 +10,11 @@ export const stylesGlobal = StyleSheet.create({
         width: '100%',
 
     },
+    center: {
+        justifyContent: 'center',
+        alignItems: 'center'
+
+    },
     padding: {
         paddingHorizontal: 20,
         paddingVertical: 20
@@ -30,13 +35,13 @@ export const stylesGlobal = StyleSheet.create({
         color: 'green'
     },
     colorDanger: {
-        color: 'red'
+        color: '#ED593C'
     },
     colorWarning: {
         color: 'orange'
     },
     colorInfo: {
-        color: 'blue'
+        color: '#6BBB8B'
     },
 
     colorLight: {
@@ -45,5 +50,13 @@ export const stylesGlobal = StyleSheet.create({
     colorDark: {
         color: 'black'
     },
+    colorBottomBar: {
+        backgroundColor: '#1F1F35',
+    },
+    colorBackGroundApp: {
+
+        backgroundColor: '#F5F5F5',
+
+    }
 
 });

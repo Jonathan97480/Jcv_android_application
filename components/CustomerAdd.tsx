@@ -68,34 +68,39 @@ export default function CustomersAdd({ curentCustomer, isModalView, setModalView
     return (
         <Modal
             animationType="slide"
-            transparent={false}
+            transparent={true}
             visible={isModalView}
             onRequestClose={() => {
                 closeModal();
             }}
-            style={{ padding: 20 }}>
+        >
 
-            <View style={stylesGlobal.padding} >
-                <Text style={styles.title}>Ajouter un client</Text>
-
-                <Filters
-                    filter={[
-                        { label: "Info client", isDefault: true, value: "info" },
-                        { label: "Adresse du client", value: "adresse" },
-                        { label: "Cordonnée du client", value: "contact" }
-                    ]}
-                    params={{
-                        isUnderlineActive: true,
-                        colorActive: "#2e64e5",
-                    }}
-
-                    onPress={(value) => setCurentViewForm({ view: value })}
-
-                />
+            <View style={[stylesGlobal.center, { height: "100%", maxHeight: "100%", width: "100%" }]} >
 
 
 
-                <View style={styles.container}>
+
+
+
+                <View style={[styles.container, { width: "90%" }]}>
+                    <Filters
+                        label='Filtres'
+                        filter={[
+                            { label: "Info", isDefault: true, value: "info" },
+                            { label: "Adresse", value: "adresse" },
+                            { label: "Cordonnée", value: "contact" }
+                        ]}
+                        params={{
+                            isUnderlineActive: true,
+                            colorActive: "#9747FF",
+                            colorInactive: "#55585D",
+                        }}
+                        value={curentViewForm.view}
+
+
+                        onPress={(value) => setCurentViewForm({ view: value })}
+
+                    />
                     {
                         loading &&
                         <ActivityIndicator animating={loading} size="large" color="#000" style={{ position: "absolute", top: "40%", left: "40%", zIndex: 10 }} />
@@ -108,7 +113,10 @@ export default function CustomersAdd({ curentCustomer, isModalView, setModalView
                             <Input
                                 value={form.nom}
                                 style={styles.input}
-                                placeholder='Nom *'
+                                placeholder='Nom du client'
+                                placeholderTextColor={"#475D5B"}
+                                labelStyle={{ color: "#1F1F35" }}
+                                label='Nom *'
                                 onChangeText={(text) => {
 
                                     ValidateInput({ ...form, nom: text }, setForm);
@@ -118,28 +126,38 @@ export default function CustomersAdd({ curentCustomer, isModalView, setModalView
                             <Input
                                 value={form.prenom}
                                 style={styles.input}
-                                placeholder='Prénom *'
+                                placeholder='Prénom du client '
+                                label='Prénom *'
+                                placeholderTextColor={"#475D5B"}
+                                labelStyle={{ color: "#1F1F35" }}
                                 onChangeText={(text) => {
 
                                     ValidateInput({ ...form, prenom: text }, setForm);
                                 }}
                                 errorMessage={form.prenomError}
                             />
-
                             <Input
-                                value={form.email}
                                 style={styles.input}
-                                placeholder='Email '
+                                value={form.telephone_mobile}
+                                label='Téléphone Mobile'
+                                placeholder='Téléphone Mobile du client'
+                                placeholderTextColor={"#475D5B"}
+                                labelStyle={{ color: "#1F1F35" }}
+                                keyboardType='phone-pad'
                                 onChangeText={(text) => {
 
-                                    ValidateInput({ ...form, email: text }, setForm);
+                                    ValidateInput({ ...form, telephone_mobile: text }, setForm);
                                 }}
-                                errorMessage={form.emailError}
+                                errorMessage={form.telephone_mobileError}
                             />
+
                             <Input
                                 style={styles.input}
                                 value={form.description}
-                                placeholder='Description'
+                                label='Description'
+                                placeholder='Écrivez toute remarque ou info supplémentaire sur votre client ici'
+                                placeholderTextColor={"#475D5B"}
+                                labelStyle={{ color: "#1F1F35" }}
                                 multiline={true}
                                 onChangeText={(text) => {
 
@@ -156,7 +174,10 @@ export default function CustomersAdd({ curentCustomer, isModalView, setModalView
                             <Input
                                 value={form.address}
                                 style={styles.input}
-                                placeholder='Adresse'
+                                label='Adresse'
+                                placeholder='Adresse du client'
+                                placeholderTextColor={"#475D5B"}
+                                labelStyle={{ color: "#1F1F35" }}
                                 onChangeText={(text) => {
 
                                     ValidateInput({ ...form, address: text }, setForm);
@@ -166,7 +187,10 @@ export default function CustomersAdd({ curentCustomer, isModalView, setModalView
                             <Input
                                 style={styles.input}
                                 value={form.ville}
-                                placeholder='Ville'
+                                label='Ville'
+                                placeholder='Ville de votre client'
+                                placeholderTextColor={"#475D5B"}
+                                labelStyle={{ color: "#1F1F35" }}
                                 onChangeText={(text) => {
 
                                     ValidateInput({ ...form, ville: text }, setForm);
@@ -176,8 +200,11 @@ export default function CustomersAdd({ curentCustomer, isModalView, setModalView
                             <Input
                                 style={styles.input}
                                 value={form.code_postal}
-                                placeholder='Code postal'
+                                label='Code postal'
+                                placeholder='Code postal de votre client'
                                 keyboardType='phone-pad'
+                                placeholderTextColor={"#475D5B"}
+                                labelStyle={{ color: "#1F1F35" }}
                                 onChangeText={(text) => {
 
                                     ValidateInput({ ...form, code_postal: text }, setForm);
@@ -191,7 +218,10 @@ export default function CustomersAdd({ curentCustomer, isModalView, setModalView
                             <Input
                                 style={styles.input}
                                 value={form.telephone}
-                                placeholder='Téléphone Fixe'
+                                label='Téléphone Fixe'
+                                placeholder='Téléphone Fixe du client'
+                                placeholderTextColor={"#475D5B"}
+                                labelStyle={{ color: "#1F1F35" }}
                                 keyboardType='phone-pad'
                                 onChangeText={(text) => {
 
@@ -199,21 +229,27 @@ export default function CustomersAdd({ curentCustomer, isModalView, setModalView
                                 }}
                                 errorMessage={form.telephoneError}
                             />
+
                             <Input
+                                value={form.email}
                                 style={styles.input}
-                                value={form.telephone_mobile}
-                                placeholder='Téléphone Mobile'
-                                keyboardType='phone-pad'
+                                label='Email'
+                                placeholder='Email  du client'
+                                placeholderTextColor={"#475D5B"}
+                                labelStyle={{ color: "#1F1F35" }}
                                 onChangeText={(text) => {
 
-                                    ValidateInput({ ...form, telephone_mobile: text }, setForm);
+                                    ValidateInput({ ...form, email: text }, setForm);
                                 }}
-                                errorMessage={form.telephone_mobileError}
+                                errorMessage={form.emailError}
                             />
                             <Input
                                 style={styles.input}
                                 value={form.faxe}
-                                placeholder='Fax'
+                                label='Fax'
+                                placeholder='Fax du client'
+                                placeholderTextColor={"#475D5B"}
+                                labelStyle={{ color: "#1F1F35" }}
                                 keyboardType='phone-pad'
                                 onChangeText={(text) => {
 
@@ -226,26 +262,49 @@ export default function CustomersAdd({ curentCustomer, isModalView, setModalView
 
 
                         </View>}
+                    <View style={[stylesGlobal.center]}>
+                        <CustomButton
+                            label={
+                                {
+                                    text: "Suivant",
+                                }
+                            }
+                            onPress={() => setCurentViewForm(
+                                curentViewForm.view === "info" ? { view: "adresse" } :
+                                    curentViewForm.view === "adresse" ? { view: "contact" } : { view: "info" })}
+                            icon={undefined} />
 
+                        <CustomButton
+                            label={{
+                                text: curentCustomer !== undefined ? "Modifier" : "Enregistrée le nouvelle utilisateur",
+
+                                size: 16,
+                            }}
+                            paddingHorizontal={40}
+                            disabled={getMinimumRequiredFields(form)}
+                            icon={
+                                <Image
+                                    source={require('../assets/customers-icon.png')}
+                                    style={{ width: 20, height: 20 }}
+                                />
+                            }
+                            onPress={() => SubmitCustomer()}
+
+                        />
+                    </View>
+                    <Text style={
+                        {
+                            color: "#C1454D",
+                            textAlign: "center",
+                            fontSize: 12,
+                        }
+                    }>Tous les champs marquée de * sont obligatoire</Text>
                 </View>
-                <CustomButton
-                    label='suivant'
-                    onPress={() => setCurentViewForm(
-                        curentViewForm.view === "info" ? { view: "adresse" } :
-                            curentViewForm.view === "adresse" ? { view: "contact" } : { view: "info" })}
-                    icon={undefined} />
 
-                <CustomButton
-                    label={curentCustomer !== undefined ? "Modifier" : "Ajouter"}
-                    disabled={getMinimumRequiredFields(form)}
-                    icon={undefined}
-                    onPress={() => SubmitCustomer()}
-
-                />
 
             </View>
 
-        </Modal>
+        </Modal >
 
 
     )
@@ -450,7 +509,11 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'stretch',
-        marginBottom: 20
+        marginBottom: 20,
+        elevation: 5,
+        borderRadius: 25,
+        backgroundColor: 'white',
+        padding: 10,
     },
     title: {
         textAlign: 'center',

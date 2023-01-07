@@ -1,40 +1,61 @@
 import React from 'react';
-import { Button, Icon, IconNode, IconProps, RneFunctionComponent } from '@rneui/base';
+import { Button, fonts, Icon, IconNode, IconProps, RneFunctionComponent } from '@rneui/base';
 import { StyleSheet, Text, View } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 
 interface PropsCustomButton {
-    label: string,
+    label: {
+        text: string,
+        color?: string,
+        size?: number,
+
+    },
+    paddingHorizontal?: number,
+    sizeButton?: number | string,
     onPress: () => void,
-    icon: IconNode | undefined
-    btnType?: 'solid' | "danger"
+    icon: React.ReactNode | undefined
+    btnType?: 'solid' | "invert"
     disabled?: boolean
 }
 
-export default function CustomButton({ label, onPress, icon, btnType, disabled }: PropsCustomButton) {
+export default function CustomButton({ label, onPress, icon, btnType, disabled, paddingHorizontal = 20, sizeButton = "auto" }: PropsCustomButton) {
     const curentStyle = getStyleBtn();
     return (
-        <Button
-            containerStyle={styles.button}
-            buttonStyle={curentStyle}
-            disabled={disabled}
+        <TouchableOpacity style={[styles.button, curentStyle, {
+            minWidth: sizeButton,
+        }]}
             onPress={onPress}
-            title={label}
+        >
 
-            icon={
-                icon
-            }
-        />
+
+            <>
+                {icon}
+                <Text
+                    style={{
+                        color: 'white',
+                        fontFamily: 'Roboto-SlabBold',
+                        fontSize: label.size || 18,
+
+
+                    }}
+                >{label.text}</Text>
+
+            </>
+
+
+        </TouchableOpacity>
+
     )
 
     function getStyleBtn() {
         switch (btnType) {
             case 'solid':
-                return { backgroundColor: '#2e64e5' }
+                return { backgroundColor: '#D77333' }
 
-            case 'danger':
+            case 'invert':
                 return { backgroundColor: 'red' }
             default:
-                return { backgroundColor: '#2e64e5' }
+                return { backgroundColor: '#D77333' }
         }
     }
 
@@ -42,9 +63,20 @@ export default function CustomButton({ label, onPress, icon, btnType, disabled }
 
 const styles = StyleSheet.create({
     button: {
-        borderRadius: 5,
+
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexWrap: 'nowrap',
+        borderRadius: 15,
         backgroundColor: 'red',
-        marginVertical: 5
+
+        paddingVertical: 10,
+        marginBottom: 17,
+        paddingHorizontal: 20,
+
+
+
     }
 
 });

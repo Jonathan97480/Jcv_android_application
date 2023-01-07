@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, StyleSheet, View, ActivityIndicator, Text, ScrollView, ActivityIndicatorBase } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import { Button, Input, Switch } from '@rneui/base';
+import { Button, Icon, Input, Switch } from '@rneui/base';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { apiNotification } from '../interface/api';
 import { stylesGlobal } from '../util/styleGlobal';
@@ -9,6 +9,7 @@ import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { PostNotification, UpdateNotification } from '../api/notification';
 import { setNotification, updateNotification } from '../redux/slice/notificationSlice';
 import { formatDateToForDisplay } from '../util/function';
+import CustomButton from './CustomButton';
 
 
 
@@ -82,6 +83,18 @@ export default function ModalAddNotification({ visible, setVisible, notification
 
             <View style={[stylesGlobal.padding, { justifyContent: 'center', minHeight: "100%" }]}>
                 <View style={{ backgroundColor: "#fff", elevation: 5, borderRadius: 5, padding: 10 }}>
+                    <View style={{ marginBottom: 17 }}>
+                        <Text style={
+                            {
+                                textAlign: "center",
+                                fontSize: 13,
+                                color: "#1F1F35",
+                                fontFamily: "Roboto-SlabBold",
+
+                            }
+                        }>Date de début de la notification : {formatDateToForDisplay(new Date(form.date))}</Text>
+
+                    </View>
 
                     {
                         loading &&
@@ -90,13 +103,19 @@ export default function ModalAddNotification({ visible, setVisible, notification
 
                     <Input
                         label="Titre"
+                        placeholder='Titre de la notification'
                         value={form.title}
+                        placeholderTextColor={"#475D5B"}
+                        labelStyle={{ color: "#1F1F35" }}
                         onChangeText={(text) => setForm({ ...form, title: text })}
                         errorMessage={form.errorTitle}
                     />
                     <Input
                         label="Description"
+                        placeholder='Description de la notification'
                         value={form.description}
+                        placeholderTextColor={"#475D5B"}
+                        labelStyle={{ color: "#1F1F35" }}
                         onChangeText={(text) => setForm({ ...form, description: text })}
                         errorMessage={form.errorDescription}
                     />
@@ -104,24 +123,49 @@ export default function ModalAddNotification({ visible, setVisible, notification
                         <Text>Répéter la notification tant quelle n'est pas valider</Text>
                         <Switch value={form.isRepeat} onValueChange={(Boolean) => {
                             setForm({ ...form, isRepeat: Boolean })
-                        }} />
-                    </View>
-                    <View>
-                        <Text>Date de début de la notification</Text>
-                        <Text>{formatDateToForDisplay(new Date(form.date))}</Text>
-                        <Button
-                            containerStyle={{ width: "100%", marginTop: 10, marginBottom: 10, elevation: 5 }}
-                            icon={{ name: "calendar", type: "font-awesome", color: "#fff", containerStyle: { marginRight: 10 } }}
-                            onPress={showDatepicker} title="Changer la date de début" />
+                        }}
+                            thumbColor={"#D77333"}
+                        />
                     </View>
 
+                    <View style={stylesGlobal.center}>
+                        <CustomButton
+                            label={{
+                                text: "Modifier la date de début de la notification",
+                                size: 14,
+                            }}
 
-                    <Button
-                        title="Ajouter"
-                        onPress={() => { submit(); }}
-                        containerStyle={{ elevation: 5 }}
+                            onPress={showDatepicker}
+                            icon={
+                                <Icon
+                                    name="calendar"
+                                    type="font-awesome"
+                                    color="#fff"
+                                    containerStyle={{ marginRight: 10 }}
+                                />
+                            }
+                            paddingHorizontal={-85}
 
-                    />
+                        />
+                        <CustomButton
+                            label={{
+                                text: "Ajouter la notification",
+                                size: 14,
+                            }}
+
+                            onPress={showDatepicker}
+                            icon={
+                                <Icon
+                                    name="save"
+                                    type="font-awesome"
+                                    color="#fff"
+                                    containerStyle={{ marginRight: 10 }}
+                                />
+                            }
+
+
+                        />
+                    </View>
                 </View>
             </View>
 

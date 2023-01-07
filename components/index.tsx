@@ -8,5 +8,7 @@ export { default as Filters } from './Filters';
 export { default as IndicatorActivity } from './IndicatorActivity';
 export { default as BackButton } from './BackButton';
 export { default as ActionsPage } from './ActionsPage';
+export { default as TitleScreen } from './TitelScreen';
+export { default as Box } from './Box';
 
 

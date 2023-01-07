@@ -76,3 +76,26 @@ export const filtersNotifications = (notifications: apiNotification[], value: st
 
 }
 
+export function formatTextStatusCustomer(text: string) {
+    /* sépare le text ou il a une majuscule sauf pour la premiere lettre */
+    const textFormated = text.replace(/([A-Z])/g, ' $1').replace(/^./, function (str) { return str.toUpperCase(); });
+    return textFormated;
+}
+
+export function getColorStatusCustomers(status: string) {
+    switch (status) {
+        case 'AProspecter':
+            return '#6BBB8B'
+        case 'PasIntéresser':
+            return '#E41F1F'
+        case 'DevisAValidee':
+            return '#D77333'
+        case 'CommandeEnCoure':
+            return '#308838'
+        case 'ARecontacter':
+            return '#B0790F'
+        default:
+            return '#1F1F35'
+
+    }
+}

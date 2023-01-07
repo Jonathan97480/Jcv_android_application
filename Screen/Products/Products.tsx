@@ -1,6 +1,7 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, View, ActivityIndicator, Text, ScrollView } from 'react-native';
+import { Image } from '@rneui/base';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GetAllCategories, GetAllNotifications, GetCustomers, UserLogin } from '../../api';
 import { apiCategories, apiProduct } from '../../interface';
@@ -13,13 +14,20 @@ import { login } from '../../redux/slice/userSlice';
 import { setData } from '../../redux/slice/customersSlice';
 import { filtersNotifications } from '../../util/function';
 import { pushNotification } from '../../components/NotificationPush';
-
+import TitelScreen from '../../components/TitelScreen';
+import { useFonts } from 'expo-font';
 
 
 
 SplashScreen.preventAutoHideAsync();
 
 export default function Products() {
+
+    const [loaded, error] = useFonts({
+        'Roboto-SlabBold': require('../fonts/roboto-slab-bold.ttf'),
+        'Open-Sans-Regular': require('../fonts/open-sans.ttf'),
+
+    });
 
 
     const [products, setProducts] = useState<apiProduct[]>([]);
@@ -104,11 +112,12 @@ export default function Products() {
 
 
     const onLayoutRootView = useCallback(async () => {
-        if (appIsReady) {
-
+        console.log("Font loaded: ", loaded, "Font error: ", error);
+        if (appIsReady && loaded) {
             await SplashScreen.hideAsync();
         }
-    }, [appIsReady]);
+    }, [appIsReady, loaded]);
+
 
     if (!appIsReady) {
         return null;
@@ -119,10 +128,18 @@ export default function Products() {
 
 
     return (
-        <SafeAreaView onLayout={onLayoutRootView}>
+        <SafeAreaView onLayout={onLayoutRootView} style={[styles.container, stylesGlobal.colorBackGroundApp]}>
             <IndicatorActivity visible={isLoading} />
             <View style={[stylesGlobal.container, stylesGlobal.padding]}>
-
+                <TitelScreen
+                    titre="Produits"
+                    image={
+                        <Image
+                            style={{ width: 38, height: 38, tintColor: '#1F1F35', marginLeft: 10 }}
+                            source={require('../../assets/products-icon.png')}
+                        />
+                    }
+                />
                 <ScrollView  >
 
                     {
@@ -130,10 +147,14 @@ export default function Products() {
                         categories.map((categorie) => {
                             return (
                                 <View key={categorie.id}>
-                                    <View style={[styles.cat, { backgroundColor: categorie.attributes.color }]}>
-                                        <Text style={styles.titleCat}>{categorie.attributes.nom}</Text>
-                                    </View>
-                                    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} >
+
+                                    <Text style={[styles.titleCat, { color: categorie.attributes.color }]}>{categorie.attributes.nom}</Text>
+
+                                    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}
+                                        style={{
+                                            marginBottom: 17
+                                        }}
+                                    >
                                         {
                                             categorie.attributes.sous_categories.data.map((sousCategorie) => {
                                                 return (
@@ -173,9 +194,10 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     titleCat: {
-        fontSize: 20,
-        fontWeight: "bold",
-        color: "#fff"
+        fontSize: 30,
+        color: "#fff",
+        marginBottom: 17,
+        fontFamily: "Roboto-SlabBold",
     }
 
 
