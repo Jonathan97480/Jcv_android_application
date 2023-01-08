@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GetAllNotifications } from '../../api';
 import { deleteNotification, setAllNotification } from '../../redux/slice/notificationSlice';
-import { CustomButton, Filters, MicroCard, ModalAddNotification, ModalNotification } from '../../components';
+import { CustomButton, Filters, MicroCard, ModalAddNotification, ModalNotification, TitleScreen } from '../../components';
 import { apiNotification } from '../../interface/api';
 import { User } from '../../interface';
 import { stylesGlobal } from '../../util/styleGlobal';
@@ -12,7 +12,8 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { DeleteNotification } from '../../api/notification';
 import { filtersNotifications, fixeText, formatDateToForDisplay } from '../../util/function';
 import { Icon, Image } from '@rneui/base';
-import TitelScreen from '../../components/TitelScreen';
+
+
 
 
 
@@ -74,7 +75,7 @@ export default function Notification() {
         <SafeAreaView style={[styles.container, stylesGlobal.colorBackGroundApp]}>
             <View style={[stylesGlobal.container, stylesGlobal.padding]} >
 
-                <TitelScreen
+                <TitleScreen
                     titre="Notifications"
                     image={<Image source={require('../../assets/notification-icon.png')}
                         resizeMode="cover"

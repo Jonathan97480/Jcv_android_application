@@ -3,15 +3,14 @@
 import { StyleSheet, Image, View, TouchableOpacity, Text } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
-import { Customers, Products, Notification, Product, ProductDetails, CustomerDetails } from './Screen';
+import { Customers, Products, Notification, Product, ProductDetails } from './Screen';
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Provider } from 'react-redux';
 import configureStore from './redux/store';
-import NotificationPush from './components/NotificationPush';
-import NotificationIcon from './components/NotificationIcon';
-import { stylesGlobal } from './util/styleGlobal';
-import { Icon } from '@rneui/base';
+import { NotificationPush, NotificationIcon } from './components';
+
+
 
 
 
@@ -164,8 +163,6 @@ function MyTabBar({ state, descriptors, navigation }: { state: any, descriptors:
             <Text
               style={{
                 color: isFocused ? '#9747FF' : '#fff',
-
-                fontFamily: "Open-Sans-Regular"
               }}>
               {label}
             </Text>

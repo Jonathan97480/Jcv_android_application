@@ -1,11 +1,11 @@
 import React from 'react';
 import { StackNavigationProp } from '@react-navigation/stack';
-
-import { Image, ScrollView, StyleSheet, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { Image, StyleSheet, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { apiProduct, RootProductStackParamList } from '../interface';
 import { useNavigation } from '@react-navigation/native';
 import { API_URL } from '@env'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import { fixeText } from '../util/function';
 
 
 
@@ -59,16 +59,14 @@ export default function CardProduct(props: Props) {
 
                         />
                 }
-                <Text style={styles.title}>{sliceTitle(products.attributes.nom)}</Text>
+                <Text style={styles.title}>{fixeText(products.attributes.nom, 15, "...")}</Text>
             </View>
         </TouchableOpacity >
 
 
     )
 }
-const sliceTitle = (title: string) => {
-    return title.length > 20 ? title.slice(0, 20) + '...' : title;
-}
+
 const styles = StyleSheet.create({
     container: {
         width: 126,
@@ -78,15 +76,16 @@ const styles = StyleSheet.create({
         margin: 20,
     },
     title: {
-
         textAlign: "center",
-
         textTransform: "capitalize",
+        marginBottom: 5,
 
     },
     image: {
-        width: 126,
-        height: 98,
+        width: 129,
+        height: 76,
+        borderRadius: 7,
+        elevation: 5,
     }
 
 });

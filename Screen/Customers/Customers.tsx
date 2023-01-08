@@ -1,20 +1,18 @@
 import React, { useEffect } from 'react';
 
 import { StyleSheet, Text, View, ScrollView, Alert, } from 'react-native';
-import { Icon, Input, Image } from '@rneui/themed';
+import { Icon, Image } from '@rneui/themed';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootCustomersStackParamList } from '../../interface/navigation';
-import { useNavigation } from '@react-navigation/native';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { Customer } from '../../interface';
-import { CustomerAdd, CustomerDetails } from '..';
+import { CustomerAdd, CustomerDetails, CustomButton, MicroCard, SearchBar, TitleScreen } from '../../components';
 import { stylesGlobal } from '../../util/styleGlobal';
-import { CustomButton, MicroCard } from '../../components';
 import { DeleteCustomer } from '../../api/customers';
 import { deletedCustomer } from '../../redux/slice/customersSlice';
-import TitelScreen from '../../components/TitelScreen';
-import SearchBar from '../../components/SearchBar';
 import { formatTextStatusCustomer, getColorStatusCustomers } from '../../util/function';
 
 
@@ -97,7 +95,7 @@ export default function Customers() {
         <SafeAreaView style={[styles.container, stylesGlobal.colorBackGroundApp]} >
 
             <View style={[stylesGlobal.container, stylesGlobal.padding]}>
-                <TitelScreen
+                <TitleScreen
                     titre="Clients"
                     image={
                         <Image

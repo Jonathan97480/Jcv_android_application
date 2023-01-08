@@ -1,15 +1,14 @@
-import { View, Text, StyleSheet, Image, TextInput, ScrollView, Modal, ActivityIndicator } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Image, Modal, ActivityIndicator } from 'react-native';
 import { Input } from '@rneui/themed';
-
-import { Button } from '@rneui/base';
-import { useEffect, useState } from 'react';
 import { AddCustomer, UpdateCustomer } from '../api/customers';
 import { useSelector, useDispatch } from 'react-redux';
 import { addCustomer, updateCustomer } from '../redux/slice/customersSlice';
 import { Customer } from '../interface';
 import CustomButton from './CustomButton';
-import { stylesGlobal } from '../util/styleGlobal';
 import Filters from './Filters';
+import { stylesGlobal } from '../util/styleGlobal';
+
 
 
 

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, Image, ScrollView } from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { API_URL } from '@env'
 import { RootProductStackParamList } from "../interface";
 import type { StackNavigationProp } from '@react-navigation/stack';
-import { Gesture, TouchableOpacity } from 'react-native-gesture-handler';
+import { Gesture } from 'react-native-gesture-handler';
 import { fixeText } from "../util/function";
 
 

@@ -1,7 +1,6 @@
 import React from 'react';
-import { Button, fonts, Icon, IconNode, IconProps, RneFunctionComponent } from '@rneui/base';
-import { StyleSheet, Text, View } from 'react-native';
-import { TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+
 
 interface PropsCustomButton {
     label: {
@@ -14,7 +13,7 @@ interface PropsCustomButton {
     sizeButton?: number | string,
     onPress: () => void,
     icon: React.ReactNode | undefined
-    btnType?: 'solid' | "invert"
+    btnType?: 'solid' | "invert" | "disabled"
     disabled?: boolean
 }
 
@@ -23,6 +22,7 @@ export default function CustomButton({ label, onPress, icon, btnType, disabled, 
     return (
         <TouchableOpacity style={[styles.button, curentStyle, {
             minWidth: sizeButton,
+            width: "auto",
         }]}
             onPress={onPress}
         >
@@ -32,7 +32,7 @@ export default function CustomButton({ label, onPress, icon, btnType, disabled, 
                 {icon}
                 <Text
                     style={{
-                        color: 'white',
+                        color: btnType === 'invert' ? '#D77333' : 'white',
                         fontFamily: 'Roboto-SlabBold',
                         fontSize: label.size || 18,
 
@@ -43,7 +43,7 @@ export default function CustomButton({ label, onPress, icon, btnType, disabled, 
             </>
 
 
-        </TouchableOpacity>
+        </TouchableOpacity >
 
     )
 
@@ -53,7 +53,9 @@ export default function CustomButton({ label, onPress, icon, btnType, disabled, 
                 return { backgroundColor: '#D77333' }
 
             case 'invert':
-                return { backgroundColor: 'red' }
+                return { backgroundColor: 'white' }
+            case 'disabled':
+                return { backgroundColor: '#D77333', opacity: 0.5 }
             default:
                 return { backgroundColor: '#D77333' }
         }
@@ -70,7 +72,7 @@ const styles = StyleSheet.create({
         flexWrap: 'nowrap',
         borderRadius: 15,
         backgroundColor: 'red',
-
+        elevation: 5,
         paddingVertical: 10,
         marginBottom: 17,
         paddingHorizontal: 20,

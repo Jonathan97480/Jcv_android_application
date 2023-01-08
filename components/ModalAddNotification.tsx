@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, StyleSheet, View, ActivityIndicator, Text, ScrollView, ActivityIndicatorBase } from 'react-native';
+import { Modal, View, ActivityIndicator, Text } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import { Button, Icon, Input, Switch } from '@rneui/base';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Icon, Input, Switch } from '@rneui/base';
 import { apiNotification } from '../interface/api';
 import { stylesGlobal } from '../util/styleGlobal';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
@@ -71,6 +70,7 @@ export default function ModalAddNotification({ visible, setVisible, notification
         setVisible(false)
 
     }
+
 
     return (
         <Modal
@@ -153,7 +153,7 @@ export default function ModalAddNotification({ visible, setVisible, notification
                                 size: 14,
                             }}
 
-                            onPress={showDatepicker}
+                            onPress={() => submit()}
                             icon={
                                 <Icon
                                     name="save"

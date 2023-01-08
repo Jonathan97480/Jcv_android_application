@@ -126,3 +126,31 @@ export const DeleteCustomer = async (customer: Customer, user: User): Promise<bo
 
     return data.status == 200;
 }
+
+export const SetStatusCustomer = async (customerId: number, user: User, statu: string): Promise<Customer> => {
+
+    const header = new Headers();
+    header.append('Authorization', 'Bearer ' + user.jwt);
+    header.append('Content-Type', 'application/json');
+
+
+
+    const requestOptions = {
+        method: 'PUT',
+        headers: header,
+
+        body: JSON.stringify({
+            data: {
+                statut: statu
+            }
+        })
+    }
+
+    const response = await fetch(`${API_URL}/api/clients/${customerId}`, requestOptions)
+    const data = await response.json();
+    console.debug('dataCustomer:', data);
+    const customerUpdated: Customer = data.data;
+    return customerUpdated;
+
+}
+

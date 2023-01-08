@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, ScrollView, ActivityIndicator, Text } from 'react-native';
+import { StyleSheet, View, ScrollView, ActivityIndicator, Text, Image } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GetAllProductsByCategory } from '../../api';
-import { CardProduct, IndicatorActivity } from '../../components';
+import { CardProduct, IndicatorActivity, TitleScreen } from '../../components';
 import { apiProduct } from '../../interface';
 import { stylesGlobal } from '../../util/styleGlobal';
+
 
 
 export default function Products(props: any) {
@@ -44,14 +45,23 @@ export default function Products(props: any) {
     return (
         <SafeAreaView style={{ padding: 8 }} >
             <IndicatorActivity visible={isLoading} />
+            <TitleScreen
+                titre="Liste de produits "
+                image={
+                    <Image
+                        style={{ width: 38, height: 38, tintColor: '#1F1F35', marginLeft: 10 }}
+                        source={require('../../assets/products-icon.png')}
+                    />
+                }
+            />
             <View style={[stylesGlobal.container, stylesGlobal.padding]}>
                 {
                     !isLoading &&
                     <View>
-                        <View style={[styles.cat, { backgroundColor: catColor }]}>
-                            <Text style={styles.titleCat}>{catName}</Text>
-                        </View>
-                        <Text style={[styles.titleCat, { color: 'black' }]}>{title}</Text>
+
+                        <Text style={[styles.titleCat, { color: catColor }]}>{catName}</Text>
+
+                        <Text style={[styles.titleCat,]}>{title}</Text>
                         <ScrollView scrollEnabled={true} showsHorizontalScrollIndicator={false} horizontal={false} >
                             <View style={styles.container}>
                                 {
@@ -85,8 +95,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'flex-start',
         height: "100%",
-
-
     },
     cat: {
         width: "100%",
@@ -96,9 +104,15 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     titleCat: {
+        fontSize: 30,
+        marginBottom: 17,
+        fontFamily: "Roboto-SlabBold",
+    },
+    subTittleCat: {
         fontSize: 20,
-        fontWeight: "bold",
-        color: "#fff"
+        color: "#1F1F35",
+        marginBottom: 17,
+        fontFamily: "Roboto-SlabBold",
     }
 });
 

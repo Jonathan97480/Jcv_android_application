@@ -1,20 +1,18 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
-import { StyleSheet, View, ActivityIndicator, Text, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, ScrollView } from 'react-native';
 import { Image } from '@rneui/base';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GetAllCategories, GetAllNotifications, GetCustomers, UserLogin } from '../../api';
 import { apiCategories, apiProduct } from '../../interface';
 import * as SplashScreen from 'expo-splash-screen';
-import { IndicatorActivity, SousCategoryCard } from '../../components';
+import { IndicatorActivity, SousCategoryCard, pushNotification, TitleScreen } from '../../components';
 import { useDispatch } from 'react-redux'
 import { stylesGlobal } from '../../util/styleGlobal';
 import { setAllNotification } from '../../redux/slice/notificationSlice';
 import { login } from '../../redux/slice/userSlice';
 import { setData } from '../../redux/slice/customersSlice';
 import { filtersNotifications } from '../../util/function';
-import { pushNotification } from '../../components/NotificationPush';
-import TitelScreen from '../../components/TitelScreen';
 import { useFonts } from 'expo-font';
 
 
@@ -25,7 +23,6 @@ export default function Products() {
 
     const [loaded, error] = useFonts({
         'Roboto-SlabBold': require('../fonts/roboto-slab-bold.ttf'),
-        'Open-Sans-Regular': require('../fonts/open-sans.ttf'),
 
     });
 
@@ -131,7 +128,7 @@ export default function Products() {
         <SafeAreaView onLayout={onLayoutRootView} style={[styles.container, stylesGlobal.colorBackGroundApp]}>
             <IndicatorActivity visible={isLoading} />
             <View style={[stylesGlobal.container, stylesGlobal.padding]}>
-                <TitelScreen
+                <TitleScreen
                     titre="Produits"
                     image={
                         <Image

@@ -1,6 +1,6 @@
 import React from "react";
-import { View, Text, StyleSheet, Modal, } from "react-native";
-import { stylesGlobal } from "../util/styleGlobal";
+import { View, StyleSheet } from "react-native";
+
 
 interface Props {
     visible?: boolean;

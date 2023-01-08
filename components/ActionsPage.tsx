@@ -8,7 +8,7 @@ interface Props {
 
 }
 
-export default function ActionPAge({ onPressEdit, onPressDelete }: Props) {
+export default function ActionsPAge({ onPressEdit, onPressDelete }: Props) {
     return (
         <View style={styles.container}>
             <TouchableOpacity style={styles.btnStyle} onPress={onPressEdit} >

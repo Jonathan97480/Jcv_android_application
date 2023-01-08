@@ -1,7 +1,7 @@
 import { Button, Icon, ListItem } from "@rneui/base";
 import React from "react";
 import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
-import { color } from "react-native-reanimated";
+
 
 
 interface Props {
