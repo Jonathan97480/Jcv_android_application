@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, ScrollView, ActivityIndicator, Text, Image } from 'react-native';
+import { StyleSheet, View, ScrollView, ActivityIndicator, Text, Image, Dimensions } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GetAllProductsByCategory } from '../../api';
-import { CardProduct, IndicatorActivity, TitleScreen } from '../../components';
+import { BackButton, CardProduct, IndicatorActivity, TitleScreen } from '../../components';
 import { apiProduct } from '../../interface';
 import { stylesGlobal } from '../../util/styleGlobal';
 
@@ -43,8 +43,13 @@ export default function Products(props: any) {
     }, [])
 
     return (
-        <SafeAreaView style={{ padding: 8 }} >
+        <SafeAreaView  >
             <IndicatorActivity visible={isLoading} />
+            <BackButton
+                onPress={() => props.navigation.goBack()}
+                nameOldScreen="Catégories"
+                nameScreen=""
+            />
             <TitleScreen
                 titre="Liste de produits "
                 image={
@@ -61,7 +66,7 @@ export default function Products(props: any) {
 
                         <Text style={[styles.titleCat, { color: catColor }]}>{catName}</Text>
 
-                        <Text style={[styles.titleCat,]}>{title}</Text>
+                        <Text style={[styles.titleCat, { textAlign: "left" }]}>{title}</Text>
                         <ScrollView scrollEnabled={true} showsHorizontalScrollIndicator={false} horizontal={false} >
                             <View style={styles.container}>
                                 {
@@ -89,11 +94,11 @@ export default function Products(props: any) {
 const styles = StyleSheet.create({
     container: {
 
-        paddingTop: "5%",
+        paddingHorizontal: "5%",
         flexDirection: "row",
         flexWrap: "wrap",
         alignItems: 'center',
-        justifyContent: 'flex-start',
+        justifyContent: Dimensions.get('window').width > 500 ? 'flex-start' : "center",
         height: "100%",
     },
     cat: {
@@ -107,6 +112,7 @@ const styles = StyleSheet.create({
         fontSize: 30,
         marginBottom: 17,
         fontFamily: "Roboto-SlabBold",
+        textAlign: "center",
     },
     subTittleCat: {
         fontSize: 20,

@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
-        marginBottom: 17,
+        marginBottom: 5,
 
     },
     titre: {

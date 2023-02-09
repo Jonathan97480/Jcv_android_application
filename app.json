@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "jcv-android",
-    "slug": "jcv-android",
+    "name": "jcv-manager",
+    "slug": "jcv-manager",
     "version": "1.0.0",
-    "orientation": "auto",
+    "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
@@ -24,7 +24,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon-jcv.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.jon.dev.jcvmanager"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -37,6 +38,11 @@
           "color": "#ffffff"
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "66d18a06-6746-48ba-96f9-a9e0dcadb0e1"
+      }
+    }
   }
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, View, ActivityIndicator, Text } from 'react-native';
+import { Modal, View, ActivityIndicator, Text, TouchableOpacity } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { Icon, Input, Switch } from '@rneui/base';
 import { apiNotification } from '../interface/api';
@@ -114,13 +114,14 @@ export default function ModalAddNotification({ visible, setVisible, notification
                         label="Description"
                         placeholder='Description de la notification'
                         value={form.description}
+                        multiline={true}
                         placeholderTextColor={"#475D5B"}
                         labelStyle={{ color: "#1F1F35" }}
                         onChangeText={(text) => setForm({ ...form, description: text })}
                         errorMessage={form.errorDescription}
                     />
                     <View style={{ justifyContent: "flex-start", alignItems: "flex-start" }}>
-                        <Text>Répéter la notification tant quelle n'est pas valider</Text>
+                        <Text>Répéter la notification tant quelle n'est pas validé</Text>
                         <Switch value={form.isRepeat} onValueChange={(Boolean) => {
                             setForm({ ...form, isRepeat: Boolean })
                         }}
@@ -166,6 +167,25 @@ export default function ModalAddNotification({ visible, setVisible, notification
 
                         />
                     </View>
+                    <TouchableOpacity
+                        onPress={() => closeModal()}
+                    >
+                        <View style={{
+                            justifyContent: "center",
+                            alignItems: "center",
+                        }}>
+                            <Text style={{
+                                color: "#D77333",
+                                fontFamily: "Roboto-SlabBold",
+                            }}>Fermer la modal</Text>
+                            <Icon
+                                name="chevron-down"
+                                type='feather'
+                                size={20}
+                                color="#D77333"
+                            />
+                        </View>
+                    </TouchableOpacity>
                 </View>
             </View>
 

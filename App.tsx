@@ -81,7 +81,7 @@ const MyTabs = () => {
 
       <Tab.Screen name="Produits" component={Products} />
       <Tab.Screen name="Clients" component={Customers} />
-      <Tab.Screen name="Notification" component={Notification} />
+      <Tab.Screen name="Notifications" component={Notification} />
 
     </Tab.Navigator>
   );
@@ -91,8 +91,8 @@ const MyTabs = () => {
 const styles = StyleSheet.create({
   container: {},
   icon: {
-    width: 38,
-    height: 38,
+    width: 20,
+    height: 20,
 
   },
 });

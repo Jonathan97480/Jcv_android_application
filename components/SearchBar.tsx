@@ -1,6 +1,6 @@
 import { Icon } from "@rneui/base";
 import React from "react";
-import { TextInput, View } from "react-native";
+import { TextInput, View, Dimensions } from "react-native";
 
 
 interface SearchBarProps {
@@ -18,11 +18,12 @@ export default function SearchBar({ onChangeText, value, placeholder }: SearchBa
             backgroundColor: "white",
             borderRadius: 10,
             paddingHorizontal: 10,
-            marginVertical: 17,
+            marginTop: 5,
+            marginBottom: 10,
             elevation: 5,
         }}>
             <TextInput
-                style={{ height: 49, width: "90%", fontFamily: "Roboto-SlabBold", fontSize: 18 }}
+                style={{ height: Dimensions.get("window").height > 500 ? 49 : 30, width: "90%", fontFamily: "Roboto-SlabBold", fontSize: 18 }}
                 placeholderTextColor="#5E5E5E"
 
                 onChangeText={text => onChangeText(text)}

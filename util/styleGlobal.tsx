@@ -17,7 +17,7 @@ export const stylesGlobal = StyleSheet.create({
     },
     padding: {
         paddingHorizontal: 20,
-        paddingVertical: 20
+        paddingVertical: 5
     },
     title: {
         fontSize: 20,

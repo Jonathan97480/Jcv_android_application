@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import { StyleSheet, Text, View, ScrollView, Alert, } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Alert, Dimensions, } from 'react-native';
 import { Icon, Image } from '@rneui/themed';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -13,7 +13,7 @@ import { CustomerAdd, CustomerDetails, CustomButton, MicroCard, SearchBar, Title
 import { stylesGlobal } from '../../util/styleGlobal';
 import { DeleteCustomer } from '../../api/customers';
 import { deletedCustomer } from '../../redux/slice/customersSlice';
-import { formatTextStatusCustomer, getColorStatusCustomers } from '../../util/function';
+import { fixeText, formatTextStatusCustomer, getColorStatusCustomers } from '../../util/function';
 
 
 type ProfileScreenNavigationProp = StackNavigationProp<
@@ -28,7 +28,7 @@ export default function Customers() {
     const user = useSelector((state: any) => state.user.user);
 
     const [customersList, setCustomersList] = React.useState<Customer[]>(customers);
-    const [curentCustomer, setCurentCustomer] = React.useState<Customer | undefined>();
+    const [curentCustomer, setCurentCustomer] = React.useState<Customer>(resetCurentCustomer());
 
     const [isModalView, setIsModalView] = React.useState(false);
     const [isModalDetailsView, setIsDetailsModalView] = React.useState(false);
@@ -55,9 +55,15 @@ export default function Customers() {
                 },
                 {
                     text: "Oui", onPress: () => {
-                        setCurentCustomer(undefined);
-                        DeleteCustomer(customer, user)
-                        dispatch(deletedCustomer(customer))
+
+                        DeleteCustomer(customer, user).then((res) => {
+                            if (res) {
+                                setCurentCustomer(resetCurentCustomer());
+                                dispatch(deletedCustomer(customer))
+                            }
+
+                        })
+
                     }
                 }
             ]
@@ -65,23 +71,7 @@ export default function Customers() {
     }
 
     const closeModal = () => {
-        setCurentCustomer({
-            id: 0,
-            attributes: {
-                nom: '',
-                prenom: '',
-                email: '',
-                telephone: null,
-                telephone_mobile: null,
-                faxe: null,
-                description: '',
-                statut: '',
-                address: '',
-                ville: '',
-                code_postal: '',
-
-            },
-        });
+        setCurentCustomer(resetCurentCustomer());
         setIsModalView(false);
         setIsDetailsModalView(false);
     }
@@ -122,8 +112,8 @@ export default function Customers() {
 
                 <ScrollView
                     style={{
-                        maxHeight: '75%',
-                        minHeight: '70%',
+                        maxHeight: Dimensions.get("window").height > 500 ? '70%' : "55%",
+                        minHeight: Dimensions.get("window").height > 500 ? '70%' : "55%",
                         marginBottom: 17,
                     }}
                 >
@@ -143,7 +133,7 @@ export default function Customers() {
 
                                     <MicroCard
                                         key={index + "-customer"}
-                                        title={customer.attributes.nom}
+                                        title={customer.attributes.nom + " " + fixeText(customer.attributes.prenom, 10, "...")}
                                         status={{
                                             text: formatTextStatusCustomer(customer.attributes.statut),
                                             color: getColorStatusCustomers(customer.attributes.statut)
@@ -176,6 +166,7 @@ export default function Customers() {
                         }
 
                     </View>
+
                 </ScrollView>
                 <View style={{ flexDirection: "row", justifyContent: 'center', alignItems: 'center' }}>
                     <CustomButton
@@ -186,7 +177,7 @@ export default function Customers() {
                         onPress={() => {
 
                             setIsModalView(true)
-                            setCurentCustomer(undefined)
+                            setCurentCustomer(resetCurentCustomer())
                         }}
                         icon={
                             <Icon
@@ -209,18 +200,38 @@ export default function Customers() {
 
 
             />
-            {
-                curentCustomer &&
-                <CustomerDetails
-                    visible={isModalDetailsView}
-                    setVisible={closeModal}
-                    customer={curentCustomer}
-                    setDelete={setDelete}
-                    setEdit={setEdit}
-                />}
+
+
+            <CustomerDetails
+                visible={isModalDetailsView}
+                setVisible={closeModal}
+                customer={curentCustomer}
+                setDelete={setDelete}
+                setEdit={setEdit}
+            />
         </SafeAreaView>
     );
 
+}
+
+function resetCurentCustomer(): Customer {
+    return {
+        id: 0,
+        attributes: {
+            nom: '',
+            prenom: '',
+            email: '',
+            telephone: null,
+            telephone_mobile: null,
+            faxe: null,
+            description: '',
+            statut: '',
+            address: '',
+            ville: '',
+            code_postal: '',
+
+        },
+    }
 }
 
 const styles = StyleSheet.create({

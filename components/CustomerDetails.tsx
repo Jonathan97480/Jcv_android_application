@@ -14,6 +14,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { updateCustomer } from '../redux/slice/customersSlice';
 
 
+
 interface Props {
     visible: boolean;
     setVisible: (visible: boolean) => void;
@@ -29,13 +30,17 @@ export default function CustomerDetails({ visible, setVisible, customer, setDele
     const [curentCustomer, setCurentCustomer] = React.useState<Customer>(customer);
     const customers = useSelector((state: any) => state.customers.customers);
     useEffect(() => {
-        const index = customers.findIndex((item: Customer) => item.id === customer.id)
-        customer = customers[index]
-        setCurentCustomer(customer)
-    }, [customers])
+        if (customer.id !== 0) {
+            const index = customers.findIndex((item: Customer) => item.id === customer.id)
+            customer = customers[index]
+            setCurentCustomer(customer)
+        }
+    }, [customers, customer.id])
 
     return (
+
         <>
+
             <Modal
 
                 visible={visible}
@@ -66,10 +71,9 @@ export default function CustomerDetails({ visible, setVisible, customer, setDele
 
                         <ActionsPAge
                             onPressDelete={() => {
+
+                                setDelete(customer)
                                 setVisible(false)
-
-                                setDelete(curentCustomer)
-
                             }}
                             onPressEdit={() => {
                                 setVisible(false)
@@ -85,7 +89,7 @@ export default function CustomerDetails({ visible, setVisible, customer, setDele
 
 
                         <Box>
-                            <Text style={[styles.sectionInfoTitle, { marginBottom: 17 }]}>Information de base</Text>
+                            <Text style={[styles.sectionInfoTitle, { marginBottom: 17 }]}>Informations de base</Text>
                             <View>
                                 <TouchableOpacity
                                     onPress={() => {
@@ -100,7 +104,7 @@ export default function CustomerDetails({ visible, setVisible, customer, setDele
                                         <Text style={{
                                             fontFamily: 'Roboto-SlabBold',
                                             fontSize: 18,
-                                        }}>Status client</Text>
+                                        }}>Statu client</Text>
                                         <Text style={
                                             {
                                                 fontFamily: 'Roboto-SlabBold',
@@ -108,12 +112,12 @@ export default function CustomerDetails({ visible, setVisible, customer, setDele
                                                 fontSize: 12,
                                                 marginBottom: 5,
                                             }
-                                        }>Toucher ici pour changer le status de votre client</Text>
+                                        }>Toucher ici pour changer le statut de votre client</Text>
                                         <View style={{
                                             width: "auto",
                                             paddingHorizontal: 10,
                                             justifyContent: 'center',
-                                            backgroundColor: getColorStatusCustomers(curentCustomer.attributes.statut),
+                                            backgroundColor: getColorStatusCustomers(curentCustomer.attributes.statut).color,
                                             padding: 5,
                                             borderRadius: 25,
                                             elevation: 5,
@@ -126,7 +130,7 @@ export default function CustomerDetails({ visible, setVisible, customer, setDele
                                                     color: '#fff',
                                                     fontWeight: 'bold',
                                                 }}
-                                            >{formatTextStatusCustomer(curentCustomer.attributes.statut)}</Text>
+                                            >{formatTextStatusCustomer(getColorStatusCustomers(curentCustomer.attributes.statut).text)}</Text>
                                         </View>
                                     </View>
                                 </TouchableOpacity>
@@ -185,19 +189,19 @@ export default function CustomerDetails({ visible, setVisible, customer, setDele
                         <Box>
                             <Text style={[styles.sectionInfoTitle, { marginBottom: 17 }]}>Contact client</Text>
                             <InfoBlock
-                                title='Telephone fixe'
+                                title='Téléphone fixe'
                                 type='number'
-                                item={curentCustomer.attributes.telephone}
+                                item={curentCustomer.attributes.telephone != null ? curentCustomer.attributes.telephone : ''}
                             />
                             <InfoBlock
-                                title='Telephone mobile'
+                                title='Téléphone mobile'
                                 type='number'
-                                item={curentCustomer.attributes.telephone_mobile}
+                                item={curentCustomer.attributes.telephone_mobile != null ? curentCustomer.attributes.telephone_mobile : ''}
                             />
                             <InfoBlock
                                 title='Fax'
                                 type='number'
-                                item={curentCustomer.attributes.faxe}
+                                item={curentCustomer.attributes.faxe != null ? curentCustomer.attributes.faxe : ''}
                             />
                         </Box>
 
@@ -215,6 +219,7 @@ export default function CustomerDetails({ visible, setVisible, customer, setDele
                     </View>
                 </ScrollView>
             </Modal >
+
             <EditStatutCustomer
                 visible={isModalView}
                 setVisible={setIsModalView}
@@ -222,6 +227,7 @@ export default function CustomerDetails({ visible, setVisible, customer, setDele
             />
 
         </>
+
     );
 
 
@@ -254,7 +260,7 @@ const EditStatutCustomer = ({ visible, setVisible, customerId }: InfoBlockProps)
                 }}>
 
                     <Box>
-                        <Text style={[styles.sectionInfoTitle, { textAlign: "center", marginBottom: 17 }]}>Sélectionner un nouveau statu pour votre client</Text>
+                        <Text style={[styles.sectionInfoTitle, { textAlign: "center", marginBottom: 17 }]}>Sélectionner un nouveau statut pour votre client</Text>
                         <View style={stylesGlobal.center}>
                             <TouchableOpacity
                                 onPress={async () => {
@@ -302,7 +308,7 @@ const EditStatutCustomer = ({ visible, setVisible, customerId }: InfoBlockProps)
 
                                     }
                                 }>
-                                <Text style={{ color: "white", fontWeight: "bold" }}>Pas Intéresser</Text>
+                                <Text style={{ color: "white", fontWeight: "bold" }}>Pas Intéressé</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity
@@ -326,7 +332,7 @@ const EditStatutCustomer = ({ visible, setVisible, customerId }: InfoBlockProps)
 
                                     }
                                 }>
-                                <Text style={{ color: "white", fontWeight: "bold" }}>Devis A Validée</Text>
+                                <Text style={{ color: "white", fontWeight: "bold" }}>Devis à Valider</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity
@@ -350,7 +356,7 @@ const EditStatutCustomer = ({ visible, setVisible, customerId }: InfoBlockProps)
 
                                     }
                                 }>
-                                <Text style={{ color: "white", fontWeight: "bold" }}>Commande En Coure</Text>
+                                <Text style={{ color: "white", fontWeight: "bold" }}>Commande En Cours</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 onPress={async () => {
@@ -437,7 +443,7 @@ const InfoBlock = ({ title, item, type = "text" }: {
                         }
                     }}
                 >
-                    {item?.toString() || ' Non renseigné'}
+                    {` ${item?.toString() || ' Non renseigné'}`}
                 </Text>
             </View >
 

@@ -45,7 +45,7 @@ export default function ModalNotification({ visible, setVisible, notification, s
 
                     <Text style={styles.title}>{notification.title}</Text>
                     <View style={styles.switchBox}>
-                        <Text>Validée la notification</Text>
+                        <Text>Valider la notification</Text>
                         <Switch
                             thumbColor={"#D77333"}
                             value={isValidated}

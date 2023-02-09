@@ -2,6 +2,7 @@
 import { Customer, User } from "../interface";
 import { API_URL } from "@env";
 import { formCustomer } from "../components/CustomerAdd";
+import { isRootedExperimentalAsync } from "expo-device";
 
 
 
@@ -81,13 +82,13 @@ export const AddCustomer = async (form: formCustomer, user: User): Promise<Custo
             data: {
                 nom: form.nom,
                 prenom: form.prenom,
-                statut: "prospection",
+                statut: "AProspecter",
                 telephone: parseInt(form.telephone),
                 telephone_mobile: parseInt(form.telephone_mobile),
                 faxe: parseInt(form.faxe),
                 address: form.address,
                 code_postal: form.code_postal,
-                email: form.email,
+                email: form.email !== "" ? form.email : null,
                 description: form.description,
                 ville: form.ville,
 
@@ -124,7 +125,7 @@ export const DeleteCustomer = async (customer: Customer, user: User): Promise<bo
     const data = await response.json();
 
 
-    return data.status == 200;
+    return response.status == 200;
 }
 
 export const SetStatusCustomer = async (customerId: number, user: User, statu: string): Promise<Customer> => {

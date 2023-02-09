@@ -31,7 +31,7 @@ export default function ProductDetails(props: any) {
                 nameOldScreen="Produits"
                 nameScreen=""
             />
-            <View style={[stylesGlobal.padding, { maxHeight: "95%", minHeight: "95%" }]}>
+            <View style={[stylesGlobal.padding, { maxHeight: "92%", minHeight: "92%" }]}>
 
                 <TitleScreen
                     titre="Fiche produit "
@@ -76,7 +76,9 @@ export default function ProductDetails(props: any) {
 
                     <Text
                         style={{
-                            marginBottom: 17
+                            marginBottom: 17,
+                            lineHeight: 30,
+                            fontWeight: "500"
                         }}
                     >{Product.attributes.description}</Text>
 
@@ -151,9 +153,10 @@ const styles = StyleSheet.create({
 
 
     }, title: {
-        fontSize: 27,
+        fontSize: Dimensions.get('window').width / 20,
         fontFamily: "Roboto-SlabBold",
         textAlign: "center",
+        marginBottom: 17
     }
 
 });

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GetAllNotifications } from '../../api';
 import { deleteNotification, setAllNotification } from '../../redux/slice/notificationSlice';
@@ -94,9 +94,9 @@ export default function Notification() {
                 <Filters
                     label='Filtres'
                     filter={[
-                        { label: "Active", isDefault: true, value: "active" },
-                        { label: "Validée", value: "validated" },
-                        { label: "Avenir", value: "coming" },
+                        { label: "Actives", isDefault: true, value: "active" },
+                        { label: "Validées", value: "validated" },
+                        { label: "A venir", value: "coming" },
 
                     ]}
                     params={
@@ -115,8 +115,8 @@ export default function Notification() {
                 <ScrollView
                     style={
                         {
-                            maxHeight: '75%',
-                            minHeight: '75%',
+                            maxHeight: Dimensions.get("window").height > 500 ? '75%' : "50%",
+                            minHeight: Dimensions.get("window").height > 500 ? '75%' : "50%",
                         }
                     }
                 >
@@ -126,7 +126,7 @@ export default function Notification() {
                                 <MicroCard
                                     key={notification.id + "-notification"}
                                     title={fixeText(notification.title, 25, "...")}
-                                    description={notification.description}
+                                    description={fixeText(notification.description, 50, "...")}
                                     status={{
                                         text: formatDateToForDisplay(new Date(notification.date)),
                                         color: "#1F1F35",

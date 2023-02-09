@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, Modal, ActivityIndicator } from 'react-native';
-import { Input } from '@rneui/themed';
+import { View, Text, StyleSheet, Image, Modal, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { Icon, Input } from '@rneui/themed';
 import { AddCustomer, UpdateCustomer } from '../api/customers';
 import { useSelector, useDispatch } from 'react-redux';
 import { addCustomer, updateCustomer } from '../redux/slice/customersSlice';
@@ -40,7 +40,7 @@ interface ViewForm {
     view: string;
 }
 
-export default function CustomersAdd({ curentCustomer, isModalView, setModalView }: { curentCustomer: Customer | undefined, isModalView: boolean, setModalView: (value: boolean) => void }) {
+export default function CustomersAdd({ curentCustomer, isModalView, setModalView }: { curentCustomer: Customer, isModalView: boolean, setModalView: (value: boolean) => void }) {
 
     const user = useSelector((state: any) => state.user);
     const dispatch = useDispatch();
@@ -53,8 +53,9 @@ export default function CustomersAdd({ curentCustomer, isModalView, setModalView
     const [curentViewForm, setCurentViewForm] = useState<ViewForm>({ view: "info" });
     const closeModal = () => {
         setForm(resetForm());
-        setModalView(false);
         setLoading(false);
+        setModalView(false);
+
     }
 
     useEffect(() => {
@@ -85,9 +86,9 @@ export default function CustomersAdd({ curentCustomer, isModalView, setModalView
                     <Filters
                         label='Filtres'
                         filter={[
-                            { label: "Info", isDefault: true, value: "info" },
+                            { label: "Infos", isDefault: true, value: "info" },
                             { label: "Adresse", value: "adresse" },
-                            { label: "Cordonnée", value: "contact" }
+                            { label: "Cordonnées", value: "contact" }
                         ]}
                         params={{
                             isUnderlineActive: true,
@@ -137,7 +138,7 @@ export default function CustomersAdd({ curentCustomer, isModalView, setModalView
                             />
                             <Input
                                 style={styles.input}
-                                value={form.telephone_mobile}
+                                value={form.telephone_mobile != null ? form.telephone_mobile : ""}
                                 label='Téléphone Mobile'
                                 placeholder='Téléphone Mobile du client'
                                 placeholderTextColor={"#475D5B"}
@@ -216,7 +217,7 @@ export default function CustomersAdd({ curentCustomer, isModalView, setModalView
                         <View>
                             <Input
                                 style={styles.input}
-                                value={form.telephone}
+                                value={form.telephone != null ? form.telephone : ""}
                                 label='Téléphone Fixe'
                                 placeholder='Téléphone Fixe du client'
                                 placeholderTextColor={"#475D5B"}
@@ -244,7 +245,7 @@ export default function CustomersAdd({ curentCustomer, isModalView, setModalView
                             />
                             <Input
                                 style={styles.input}
-                                value={form.faxe}
+                                value={form.faxe != null ? form.faxe : ""}
                                 label='Fax'
                                 placeholder='Fax du client'
                                 placeholderTextColor={"#475D5B"}
@@ -275,7 +276,7 @@ export default function CustomersAdd({ curentCustomer, isModalView, setModalView
 
                         <CustomButton
                             label={{
-                                text: curentCustomer !== undefined ? "Modifier" : "Enregistrée le nouvelle utilisateur",
+                                text: curentCustomer?.id !== 0 ? "Modifier" : "Enregistrer le nouvel utilisateur",
 
                                 size: 16,
                             }}
@@ -297,7 +298,26 @@ export default function CustomersAdd({ curentCustomer, isModalView, setModalView
                             textAlign: "center",
                             fontSize: 12,
                         }
-                    }>Tous les champs marquée de * sont obligatoire</Text>
+                    }>Tous les champs marqués de * sont obligatoires</Text>
+                    <TouchableOpacity
+                        onPress={() => closeModal()}
+                    >
+                        <View style={{
+                            justifyContent: "center",
+                            alignItems: "center",
+                        }}>
+                            <Text style={{
+                                color: "#D77333",
+                                fontFamily: "Roboto-SlabBold",
+                            }}>Fermer la modal</Text>
+                            <Icon
+                                name="chevron-down"
+                                type='feather'
+                                size={20}
+                                color="#D77333"
+                            />
+                        </View>
+                    </TouchableOpacity>
                 </View>
 
 
@@ -311,7 +331,7 @@ export default function CustomersAdd({ curentCustomer, isModalView, setModalView
 
     function SubmitCustomer() {
         setLoading(true);
-        if (curentCustomer === undefined) {
+        if (curentCustomer?.id === 0) {
             AddCustomer(form, user.user).then((customer) => {
 
                 if (customer !== undefined) {
@@ -332,7 +352,7 @@ export default function CustomersAdd({ curentCustomer, isModalView, setModalView
             const newCustomer = {
                 ...curentCustomer,
                 attributes: {
-                    ...curentCustomer.attributes,
+                    ...curentCustomer?.attributes,
                     nom: form.nom,
                     prenom: form.prenom,
                     email: form.email,
